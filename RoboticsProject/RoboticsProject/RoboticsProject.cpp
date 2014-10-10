@@ -1,6 +1,5 @@
 // RoboticsProject.cpp : Defines the entry point for the console application.
 //
-
 #include "stdafx.h"
 #include "opencv2\opencv.hpp"
 
@@ -23,6 +22,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	// instantiate object for image processing
 	ImageProcessor imageProcessor;
 
+	Mat thresholded;
+	vector<Point> *sign_contour;
+
+
 	for (;;)
 	{
 		Mat frame;
@@ -34,8 +37,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		Canny(edges, edges, 0, 30, 3);
 		*/
 
-		Mat *thresholded = imageProcessor.getThresholdedImage(&frame);
-		vector<Point> *sign_contour = imageProcessor.getLocationOfObject(thresholded);
+		imageProcessor.getThresholdedImage(&frame, &thresholded);
+		sign_contour = imageProcessor.getLocationOfObject(&thresholded);
 		Mat focus(Size(128, 128), CV_8UC3);
 
 		if (sign_contour != NULL) { // object was found
@@ -43,7 +46,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			// isolate object
 			Rect sign_location = boundingRect(*sign_contour);
 			rectangle(frame, sign_location, Scalar(255, 0, 0), 2);
-			Mat cropped_binary = (*thresholded)(sign_location);
+			Mat cropped_binary = (thresholded)(sign_location);
 
 			// check which object it is
 			SignTypeEnum object_type = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
@@ -90,7 +93,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		}
 		
-		cv::imshow("thresholded", *thresholded);
+		cv::imshow("thresholded", thresholded);
 		cv::imshow("original", frame);
 
 		if (waitKey(30) >= 0) break;

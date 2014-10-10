@@ -19,8 +19,9 @@ public:
 	ImageProcessor();
 	~ImageProcessor();
 
-	Mat *getThresholdedImage(Mat *input);
+	void getThresholdedImage(Mat *input, Mat* output);
 	vector<Point>* getLocationOfObject(Mat *binaryInput); // returns null if no object is found
+
 	SignTypeEnum recognizeSign(Mat* croppedInput, vector<Point> *contour);
 
 	double getArrowAngle(vector<Point> *contour, Mat *croppedImage); 

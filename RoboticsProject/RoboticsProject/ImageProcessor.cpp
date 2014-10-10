@@ -11,7 +11,7 @@ ImageProcessor::~ImageProcessor()
 {
 }
 
-Mat* ImageProcessor::getThresholdedImage(Mat *input) {
+void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 	
 	//resize(*input, *input, Size(320, 240));
 
@@ -19,7 +19,7 @@ Mat* ImageProcessor::getThresholdedImage(Mat *input) {
 
 	double erosion_size = 3;
 
-	Mat *result, *input_hsv = new Mat();
+	Mat *input_hsv = new Mat();
 
 	//convert BGR image to HSV for segmentation
 	cvtColor(*input, *input_hsv, CV_BGR2HSV);
@@ -42,7 +42,7 @@ Mat* ImageProcessor::getThresholdedImage(Mat *input) {
 	threshold(channelV, val2, 230, 255, THRESH_BINARY_INV);
 
 	// combine results
-	result = new Mat((hue1 | hue2) & sat & val1 & val2);
+	*result = Mat((hue1 | hue2) & sat & val1 & val2);
 	
 	Mat element = getStructuringElement(MORPH_ELLIPSE,
 		Size(2 * erosion_size + 1, 2 * erosion_size + 1),
@@ -55,7 +55,8 @@ Mat* ImageProcessor::getThresholdedImage(Mat *input) {
 	dilate(*result, *result, element);
 	erode(*result, *result, element);
 
-	return result;
+	delete input_hsv;
+
 }
 
 vector<Point>* ImageProcessor::getLocationOfObject(Mat *binaryInput) {
