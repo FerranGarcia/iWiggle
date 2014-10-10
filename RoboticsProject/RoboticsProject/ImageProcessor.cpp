@@ -28,17 +28,17 @@ Mat* ImageProcessor::getThresholdedImage(Mat *input) {
 	split(*input_hsv, channels);
 	Mat channelH = channels[0];;
 	Mat channelS = channels[1];
-	Mat channelV = channels[1];
+	Mat channelV = channels[2];
 
 	Mat hue1, hue2, sat, val1, val2;
-	threshold(channelH, hue1, 0, 255, THRESH_BINARY_INV);
-	threshold(channelH, hue2, 160, 255, THRESH_BINARY);
+	threshold(channelH, hue1, 5, 255, THRESH_BINARY_INV);
+	threshold(channelH, hue2, 170, 255, THRESH_BINARY);
 
-	threshold(channelS, sat, 40, 255, THRESH_BINARY);
+	threshold(channelS, sat, 100, 255, THRESH_BINARY);
 
 	//equalizeHist(channelV, channelV);
 
-	threshold(channelV, val1, 50, 255, THRESH_BINARY);
+	threshold(channelV, val1, 40, 255, THRESH_BINARY);
 	threshold(channelV, val2, 230, 255, THRESH_BINARY_INV);
 
 	// combine results
