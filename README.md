@@ -1,8 +1,7 @@
 #To Start With#
 
-https://bitbucket.org/andreythelads/iwiggle
-
 Issue board:
+
 http://www.bitbucketcards.com/andreythelads/iwiggle
 
 ### What is this repository for? ###
