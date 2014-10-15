@@ -1,14 +1,11 @@
-#To Start With#
-
-Issue board:
+#Issue board#
 
 http://www.bitbucketcards.com/andreythelads/iwiggle
 
-### What is this repository for? ###
+### Supervisor ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* [James Herd Contacts](http://www.eps.hw.ac.uk/staff-directory/j_herd.htm)
+
 
 ### How do I get set up? ###
 
