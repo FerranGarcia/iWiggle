@@ -6,7 +6,9 @@ Motion::Motion(void)
 	this->address = 0x58;
 
 	printf("**** MD25 test program ****\n");
-		
+	
+	// skip opening port on windows
+#ifdef __linux__
 	this->port = fopen(fileName,"r+");										// Open port for reading and writing
 	if (this->port == NULL){
 		printf("Failed to open i2c port\n");
@@ -19,9 +21,7 @@ Motion::Motion(void)
 		printf("Unable to get bus access to talk to slave\n");
 		exit(1);
 	}
-	
-	this->buf[0] = 13;														// This is the register we wish to read software version from
-	
+
 	if ((write(this->fd, this->buf, 1)) != 1) {							// Send regiter to read software from
 		printf("Error writing to i2c slave\n");
 		exit(1);
@@ -42,21 +42,29 @@ Motion::Motion(void)
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+#else 
+
+#endif
 }
 
 void Motion::resetEncoders(void) {
+#ifdef __linux__
 	this->buf[0] = 16;												// Command register
 	this->buf[1] = 32;												// command to set decoders back to zero
-	
+
 	if ((write(this->fd, this->buf, 2)) != 2) {
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+#else 
+	cout << "[ INFO ] Reseting encoders." << endl;
+#endif
 }
 
 long Motion::readEncoderValues (void) {
-	
-	long encoder1, encoder2;
+
+	long encoder1 = 0, encoder2 = 0;
+#ifdef __linux__
 	
 	this->buf[0] = 2;													// register for start of encoder values
 	
@@ -74,10 +82,17 @@ long Motion::readEncoderValues (void) {
 		encoder2 = (this->buf[4] <<24) + (this->buf[5] << 16) + (this->buf[6] << 8) + this->buf[7];
 		printf("Encoder 1: %08lX   Encoder 2: %08lX\n",encoder1, encoder2);
 	}
-	return encoder1;	
+
+	#else 
+		cout << "[ INFO ] Reading encoder values." << endl;
+	#endif
+		return encoder1;
 }
 
 void Motion::driveMotors(int linear, int angular){
+
+#ifdef __linux__
+
 	this->buf[0] = 0;														// Register to set speed of motor 1
 	this->buf[1] = linear;													// speed to be set
 	
@@ -93,9 +108,15 @@ void Motion::driveMotors(int linear, int angular){
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+#else
+	cout << "[ INFO ] Setting linear speed to " << linear << " and angular speed to " << angular << "." << endl;
+#endif
 }
 
 void Motion::stopMotors(void){
+
+#ifdef __linux__
+
 	this->buf[0] = 0;													
 	this->buf[1] = 0;														// A speed of 128 stops the motor
 	
@@ -111,10 +132,14 @@ void Motion::stopMotors(void){
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+#else
+	cout << "[ INFO ] Stopping motors." << endl;
+#endif
 }
 
 void Motion::turnLeft(int speed){
 
+#ifdef __linux__
 	this->buf[0] = 0;													
 	this->buf[1] = speed;
 
@@ -130,9 +155,14 @@ void Motion::turnLeft(int speed){
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+#else
+	cout << "[ INFO ] Turning left." << endl;
+#endif
 }
 
 void Motion::turnRight(int speed){
+
+#ifdef __linux__
 	this->buf[0] = 1;													
 	this->buf[1] = speed;
 
@@ -148,7 +178,9 @@ void Motion::turnRight(int speed){
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
-
+#else
+	cout << "Turning right." << endl;
+#endif
 }
 
 Motion::~Motion(void)
