@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <math.h>
 
 
 using namespace std;
@@ -46,6 +47,6 @@ public:
 	
 	~Motion(void);
 private:
-	int wheelRadius = 50; // mm
-	int wheelBase = 224;  // mm
+	static const int wheelRadius = 50; // mm
+	static const int wheelBase = 224;  // mm
 };
