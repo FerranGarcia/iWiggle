@@ -30,6 +30,9 @@
     <ClInclude Include="Motion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="distSensor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Motion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="distSensor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
