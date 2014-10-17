@@ -19,6 +19,7 @@
 #include <iostream>
 #include <fstream>
 
+
 using namespace std;
 
 class Motion
@@ -34,11 +35,17 @@ public:
 
 	Motion(void);
 	void resetEncoders(void);
-	long readEncoderValues(void);
+	long readEncoderValueLeft(void);
+	long readEncoderValueRight(void);
+
 	void driveMotors(int, int);
 	void stopMotors(void);
 	void turnLeft(int);
 	void turnRight(int);
+	void turnAngle(int, int);
 	
 	~Motion(void);
+private:
+	int wheelRadius = 50; // mm
+	int wheelBase = 224;  // mm
 };
