@@ -66,3 +66,8 @@ Makefile*
 *.tmp
 *.tmp_proj
 
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
