@@ -2,7 +2,7 @@
 
 Motion::Motion(void)
 {
-	this->fileName = "/dev/i2c-1";
+	this->fileName = (char *)"/dev/i2c-1";
 	this->address = 0x58;
 	printf("**** MD25 test program ****\n");
 	
@@ -41,6 +41,8 @@ Motion::Motion(void)
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+   // reset encoders before start driving;
+   resetEncoders();
 #else 
 
 #endif
@@ -60,7 +62,7 @@ void Motion::resetEncoders(void) {
 #endif
 }
 
-long Motion::readEncoderValueLeft(void) {
+long int Motion::readEncoderValueLeft(void) {
 
 	long encoder = 0;
 #ifdef __linux__
@@ -83,10 +85,13 @@ long Motion::readEncoderValueLeft(void) {
 	#else 
 		cout << "[ INFO ] Reading encoder value left." << endl;
 	#endif
-		return encoder;
+    // due to wheel mounting it has to be multiplied by -1 
+	//to have a correct encoder readings
+    encoder *= -1;
+	return encoder;
 }
 
-long Motion::readEncoderValueRight(void) {
+long int Motion::readEncoderValueRight(void) {
 
 	long encoder = 0;
 #ifdef __linux__
@@ -109,6 +114,9 @@ long Motion::readEncoderValueRight(void) {
 #else 
 	cout << "[ INFO ] Reading encoder value right." << endl;
 #endif
+    // due to wheel mounting it has to be multiplied by -1 
+	//to have a correct encoder readings
+    encoder *= -1;
 	return encoder;
 }
 

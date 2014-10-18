@@ -36,8 +36,8 @@ public:
 
 	Motion(void);
 	void resetEncoders(void);
-	long readEncoderValueLeft(void);
-	long readEncoderValueRight(void);
+	long int readEncoderValueLeft(void);
+	long int readEncoderValueRight(void);
 
 	void driveMotors(int, int);
 	void stopMotors(void);
