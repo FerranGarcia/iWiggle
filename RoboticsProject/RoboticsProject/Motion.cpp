@@ -235,30 +235,27 @@ void Motion::turnAngle(int angle, int speed){
 #else
 	cout << "Turning given angle." << endl;
 #endif
-	
 
-#ifdef __linux__
-
-	this->buf[0] = 0;
-	this->buf[1] = speed;
-
-	if ((write(this->fd, this->buf, 2)) != 2) {
-		printf("Error writing to i2c slave\n");
-		exit(1);
-	}
-
-	this->buf[0] = 1;
-	this->buf[1] = -speed;
-
-	if ((write(this->fd, this->buf, 2)) != 2) {
-		printf("Error writing to i2c slave\n");
-		exit(1);
-	}
-#else
-	cout << "[ INFO ] Turning left." << endl;
-#endif
 }
 
+float Motion::getHeading(void){
+	float heading = 9999;
+#ifdef __linux__
+	// Read encoders
+	long int counterLeft = readEncoderValueLeft();
+	long int counterRight = readEncoderValueRight();
+	// get difference
+	int counterDiff = counterRight - counterLeft;
+	
+	//calculate heading in angles
+	heading = wheelRadius / wheelBase * counterDiff;
+	// wrap to range (-180;180]
+	heading = ((heading + 180) % 360) - 180;
+#else 
+	cout << "[ INFO ] Returning robot heading" << endl;
+#endif
+	return heading;
+}
 
-Motion::~Motion(void)
-{}
+Motion::~Motion(void){
+}

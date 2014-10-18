@@ -33,7 +33,7 @@ public:
 
 	FILE *port;
 
-
+	// Constructor
 	Motion(void);
 	void resetEncoders(void);
 	long int readEncoderValueLeft(void);
@@ -44,9 +44,12 @@ public:
 	void turnLeft(int);
 	void turnRight(int);
 	void turnAngle(int, int);
-	
+
+	float getHeading(void);
+
+	// Destructor
 	~Motion(void);
 private:
 	static const int wheelRadius = 50; // mm
-	static const int wheelBase = 224;  // mm
+	static const int wheelBase = 224;  // mm, distance between wheels
 };
