@@ -23,7 +23,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// instantiate object for image processing
 	ImageProcessor imageProcessor;
-	StateMachine stateMachine;
+	imageProcessor.perceptionArea = cv::Rect(50, 50, 210, 110);
+	imageProcessor.proximityArea = cv::Rect(50, 160, 210, 70);
+
+	StateMachine stateMachine(cv::Size(320, 240));
 
 	Mat thresholded;
 	vector<Point> *sign_contour;
@@ -33,18 +36,13 @@ int _tmain(int argc, _TCHAR* argv[])
 		Mat frame;
 		cap >> frame; // get a new frame from camera
 
-		/*
-		cvtColor(frame, edges, CV_BGR2GRAY);
-		GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
-		Canny(edges, edges, 0, 30, 3);
-		*/
-
 		imageProcessor.getThresholdedImage(&frame, &thresholded);
 		sign_contour = imageProcessor.getLocationOfObject(&thresholded);
 		Mat focus(Size(128, 128), CV_8UC3);
 
 		if (sign_contour != NULL) { // object was found
 
+			// -------------------------- PROCESS THE INPUT ------------------------//
 			// isolate object
 			Rect sign_location = boundingRect(*sign_contour);
 			rectangle(frame, sign_location, Scalar(255, 0, 0), 2);
@@ -52,7 +50,27 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			// check which object it is
 			SignInstance* detectedSign = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
-			Point2f mass_center = imageProcessor.getMassCenter(&cropped_binary);
+
+			stateMachine.FeedSign(detectedSign);
+			//stateMachine.FeedDistanceSensor(distances);
+			//stateMachine.FeedAngle(angle);
+
+			// --------------------- PERFORM STATE MACHINE TICK ---------------------//
+			stateMachine.Tick();
+
+			// ----------------------------- SHOW OUTPUT ----------------------------//
+
+			cout << "[ OUT ] CURRENT STATE: ";
+			switch (stateMachine.currentState) {
+				case IDLE: cout << "IDLE" << endl; break;
+				case WIGGLING: cout << "WIGGLING" << endl; break;
+				case APPROACHING_SIGN: cout << "APPROACHING_SIGN" << endl; break;
+				case EXECUTING_COMMAND: cout << "EXECUTING_COMMAND" << endl; break;
+			}
+			cout << "[ OUT ] Resulting linear speed: " << stateMachine.resultingLinear << endl;
+			cout << "[ OUT ] Resulting angular speed: " << stateMachine.resultingAngular << endl;
+
+			Point2f mass_center = detectedSign->centerOfMass;
 			focus = frame(sign_location);
 			double arrow_angle = 0;
 
@@ -95,6 +113,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		}
 		
+		// draw perceptive area
+		rectangle(frame, imageProcessor.perceptionArea, cv::Scalar(0, 255, 0));
+		// draw proximity area
+		rectangle(frame, imageProcessor.proximityArea, cv::Scalar(0, 0, 255));
 		cv::imshow("thresholded", thresholded);
 		cv::imshow("original", frame);
 

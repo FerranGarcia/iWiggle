@@ -8,7 +8,9 @@ SignInstance::SignInstance()
 	this->signType = NO_SIGN;
 
 	// record the time of apearance (constructor call)
-	time(&this->timestamp);
+	this->timestamp = clock();
+
+	reliabilityCount = 0;
 }
 
 

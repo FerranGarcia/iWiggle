@@ -18,5 +18,7 @@ public:
 
 	double getArrowAngle(vector<Point> *contour, Mat *croppedImage); 
 	Point2f getMassCenter(Mat *croppedImage);
+
+	cv::Rect perceptionArea, proximityArea;
 };
 

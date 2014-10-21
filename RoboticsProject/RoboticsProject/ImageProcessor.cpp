@@ -13,11 +13,11 @@ ImageProcessor::~ImageProcessor()
 
 void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 	
-	//resize(*input, *input, Size(320, 240));
+	resize(*input, *input, Size(320, 240));
 
 	GaussianBlur(*input, *input, Size(1, 1), 1.0);
 
-	double erosion_size = 3;
+	double erosion_size = 1;
 
 	Mat *input_hsv = new Mat();
 
@@ -34,7 +34,7 @@ void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 	threshold(channelH, hue1, 5, 255, THRESH_BINARY_INV);
 	threshold(channelH, hue2, 170, 255, THRESH_BINARY);
 
-	threshold(channelS, sat, 100, 255, THRESH_BINARY);
+	threshold(channelS, sat, 70, 255, THRESH_BINARY);
 
 	//equalizeHist(channelV, channelV);
 
@@ -63,7 +63,7 @@ vector<Point>* ImageProcessor::getLocationOfObject(Mat *binaryInput) {
 
 	vector<Point> *ret = NULL;
 
-	double min_area_threshold = binaryInput->size().area() * 0.01;
+	double min_area_threshold = binaryInput->size().area() * 0.005;
 
 	int largest_area = 0;
 	int largest_contour_index = 0;
@@ -110,8 +110,20 @@ SignInstance* ImageProcessor::recognizeSign(Mat* croppedInput, vector<Point> *co
 
 		std::cout << "Area ratio is " << ratio << std::endl;
 
-		if (ratio > 0.6) returnSign->signType = WAYPOINT;
+		if (ratio > 0.65) returnSign->signType = WAYPOINT;
 		else returnSign->signType = STOP;
+	}
+
+	returnSign->location = boundingRect(*contour);
+
+	// compute the area in which the sign is
+	cv::Point2f massGlobalPos(returnSign->location.x + returnSign->centerOfMass.x, returnSign->location.y + returnSign->centerOfMass.y);
+	returnSign->signArea = SIGN_AREA_FAR; 
+	if (this->perceptionArea.contains(massGlobalPos)) {
+		returnSign->signArea = SIGN_AREA_DETECTION;
+	}
+	if (this->proximityArea.contains(massGlobalPos)) {
+		returnSign->signArea = SIGN_AREA_CLOSE;
 	}
 
 	return returnSign;

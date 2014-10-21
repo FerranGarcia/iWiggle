@@ -1,5 +1,7 @@
 #pragma once
 
+#define SIGN_RELIABILITY_COUNT 10
+
 #include <ctime>
 #include "opencv2\opencv.hpp"
 
@@ -31,11 +33,13 @@ public:
 	cv::Mat *thresholdedMat;
 	cv::Mat *rawImage;
 
-	time_t timestamp;
+	clock_t timestamp;
 
 	SignRegion signArea;
 
 	cv::Point2f centerOfMass;
 	cv::Point2f centerOfImage;
+
+	int reliabilityCount;
 };
 
