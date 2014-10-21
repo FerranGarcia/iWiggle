@@ -84,6 +84,8 @@
   <ItemGroup>
     <ClInclude Include="ImageProcessor.h" />
     <ClInclude Include="Motion.h" />
+    <ClInclude Include="SignInstance.h" />
+    <ClInclude Include="StateMachine.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -91,6 +93,8 @@
     <ClCompile Include="ImageProcessor.cpp" />
     <ClCompile Include="Motion.cpp" />
     <ClCompile Include="RoboticsProject.cpp" />
+    <ClCompile Include="SignInstance.cpp" />
+    <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
