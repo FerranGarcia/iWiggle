@@ -4,6 +4,8 @@
 #include "opencv2\opencv.hpp"
 
 #include "ImageProcessor.h"
+#include "StateMachine.h"
+#include "SignInstance.h"
 
 using namespace cv;
 using namespace std;
@@ -21,10 +23,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// instantiate object for image processing
 	ImageProcessor imageProcessor;
+	StateMachine stateMachine;
 
 	Mat thresholded;
 	vector<Point> *sign_contour;
-
 
 	for (;;)
 	{
@@ -49,7 +51,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			Mat cropped_binary = (thresholded)(sign_location);
 
 			// check which object it is
-			SignTypeEnum object_type = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
+			SignInstance* detectedSign = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
 			Point2f mass_center = imageProcessor.getMassCenter(&cropped_binary);
 			focus = frame(sign_location);
 			double arrow_angle = 0;
@@ -57,14 +59,14 @@ int _tmain(int argc, _TCHAR* argv[])
 			// handle recognition ofdifferent object
 			cout << "---> DETECTED OBJECT: ";
 			
-			switch (object_type)
+			switch (detectedSign->signType)
 			{
 			case SignTypeEnum::WAYPOINT:
 				cout << "CIRCLE" << endl;
 				break;
 			case SignTypeEnum::ARROW:
 
-				cout << "ARROW [" << endl;
+				cout << "ARROW [" ;
 
 				// suppose it's an arrow, extract angle
 				arrow_angle = imageProcessor.getArrowAngle(sign_contour, &cropped_binary);

@@ -91,15 +91,17 @@ vector<Point>* ImageProcessor::getLocationOfObject(Mat *binaryInput) {
 	return ret;
 }
 
-SignTypeEnum ImageProcessor::recognizeSign(Mat* croppedInput, vector<Point> *contour) {
+SignInstance* ImageProcessor::recognizeSign(Mat* croppedInput, vector<Point> *contour) {
 
-	Point2f center_of_mass = getMassCenter(croppedInput);
-	Point2f center_of_image(croppedInput->size().width / 2, croppedInput->size().height / 2);
+	SignInstance *returnSign = new SignInstance();
 
-	double distance = sqrt(pow(center_of_image.x - center_of_mass.x, 2) + pow(center_of_image.y - center_of_mass.y, 2));
+	returnSign->centerOfMass = getMassCenter(croppedInput);
+	returnSign->centerOfImage = cv::Point2f(croppedInput->size().width / 2, croppedInput->size().height / 2);
+
+	double distance = sqrt(pow(returnSign->centerOfImage.x - returnSign->centerOfMass.x, 2) + pow(returnSign->centerOfImage.y - returnSign->centerOfMass.y, 2));
 
 	if (distance > croppedInput->size().width * 0.05) {
-		return SignTypeEnum::ARROW;
+		returnSign->signType = ARROW;
 	}
 	else { // distinguish between circle and cross
 		double total_area = croppedInput->size().area();
@@ -108,12 +110,11 @@ SignTypeEnum ImageProcessor::recognizeSign(Mat* croppedInput, vector<Point> *con
 
 		std::cout << "Area ratio is " << ratio << std::endl;
 
-		if (ratio > 0.6) return SignTypeEnum::WAYPOINT;
-		else return SignTypeEnum::STOP;
+		if (ratio > 0.6) returnSign->signType = WAYPOINT;
+		else returnSign->signType = STOP;
 	}
 
-	return SignTypeEnum::NO_SIGN;
-
+	return returnSign;
 }
 
 Point2f ImageProcessor::getMassCenter(Mat *croppedImage) {

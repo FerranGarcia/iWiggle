@@ -8,6 +8,8 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
+*.dll
+*.lib
 
 # Precompiled Headers
 *.gch
