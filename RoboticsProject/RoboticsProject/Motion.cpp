@@ -2,9 +2,8 @@
 
 Motion::Motion(void)
 {
-	this->fileName = "/dev/i2c-1";
+	this->fileName = (char *)"/dev/i2c-1";
 	this->address = 0x58;
-
 	printf("**** MD25 test program ****\n");
 	
 	// skip opening port on windows
@@ -42,6 +41,8 @@ Motion::Motion(void)
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+   // reset encoders before start driving;
+   resetEncoders();
 #else 
 
 #endif
@@ -61,9 +62,9 @@ void Motion::resetEncoders(void) {
 #endif
 }
 
-long Motion::readEncoderValues (void) {
+long int Motion::readEncoderValueLeft(void) {
 
-	long encoder1 = 0, encoder2 = 0;
+	long encoder = 0;
 #ifdef __linux__
 	
 	this->buf[0] = 2;													// register for start of encoder values
@@ -78,15 +79,45 @@ long Motion::readEncoderValues (void) {
 		exit(1);
 	}
 	else {
-		encoder1 = (this->buf[0] <<24) + (this->buf[1] << 16) + (this->buf[2] << 8) + this->buf[3];	// Put encoder values together
-		encoder2 = (this->buf[4] <<24) + (this->buf[5] << 16) + (this->buf[6] << 8) + this->buf[7];
-		printf("Encoder 1: %08lX   Encoder 2: %08lX\n",encoder1, encoder2);
+		encoder = (this->buf[0] <<24) + (this->buf[1] << 16) + (this->buf[2] << 8) + this->buf[3];	// Put encoder values together
 	}
 
 	#else 
-		cout << "[ INFO ] Reading encoder values." << endl;
+		cout << "[ INFO ] Reading encoder value left." << endl;
 	#endif
-		return encoder1;
+    // due to wheel mounting it has to be multiplied by -1 
+	//to have a correct encoder readings
+    encoder *= -1;
+	return encoder;
+}
+
+long int Motion::readEncoderValueRight(void) {
+
+	long encoder = 0;
+#ifdef __linux__
+
+	this->buf[0] = 2;													// register for start of encoder values
+
+	if ((write(this->fd, this->buf, 1)) != 1) {
+		printf("Error writing to i2c slave\n");
+		exit(1);
+	}
+
+	if (read(this->fd, this->buf, 8) != 8) {								// Read back 8 bytes for the encoder values into buf[]
+		printf("Unable to read from slave\n");
+		exit(1);
+	}
+	else {
+		encoder = (this->buf[4] <<24) + (this->buf[5] << 16) + (this->buf[6] << 8) + this->buf[7];	// Put encoder values together
+}
+
+#else 
+	cout << "[ INFO ] Reading encoder value right." << endl;
+#endif
+    // due to wheel mounting it has to be multiplied by -1 
+	//to have a correct encoder readings
+    encoder *= -1;
+	return encoder;
 }
 
 void Motion::driveMotors(int linear, int angular){
@@ -183,5 +214,48 @@ void Motion::turnRight(int speed){
 #endif
 }
 
-Motion::~Motion(void)
-{}
+void Motion::turnAngle(int angle, int speed){
+
+#ifdef __linux__
+	int angularSpeed;
+	int encoderCount;
+
+	angularSpeed = (angle > 0) ? speed : -speed;
+	encoderCount = rint( angle* wheelBase / (2*wheelRadius) ) ;
+
+	resetEncoders();											// Reset the encoder values to 0
+
+	while (readEncoderValueLeft() < encoderCount) {						// Check the value of encoder 1 and stop after it has traveled a set distance
+    //printf("Left: %lu , Right: %lu \n",readEncoderValueLeft(), readEncoderValueRight());
+		driveMotors(0, angularSpeed);
+		usleep(2000);
+	}
+  stopMotors();
+
+#else
+	cout << "Turning given angle." << endl;
+#endif
+
+}
+
+float Motion::getHeading(void){
+	float heading = 9999;
+#ifdef __linux__
+	// Read encoders
+	long int counterLeft = readEncoderValueLeft();
+	long int counterRight = readEncoderValueRight();
+	// get difference
+	int counterDiff = counterRight - counterLeft;
+	
+	//calculate heading in angles
+	heading = wheelRadius / wheelBase * counterDiff;
+	// wrap to range (-180;180]
+	heading = ((heading + 180) % 360) - 180;
+#else 
+	cout << "[ INFO ] Returning robot heading" << endl;
+#endif
+	return heading;
+}
+
+Motion::~Motion(void){
+}

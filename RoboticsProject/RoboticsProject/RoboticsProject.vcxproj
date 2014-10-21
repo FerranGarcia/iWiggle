@@ -82,6 +82,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="distSensor.h" />
     <ClInclude Include="ImageProcessor.h" />
     <ClInclude Include="Motion.h" />
     <ClInclude Include="SignInstance.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="distSensor.cpp" />
     <ClCompile Include="ImageProcessor.cpp" />
     <ClCompile Include="Motion.cpp" />
     <ClCompile Include="RoboticsProject.cpp" />

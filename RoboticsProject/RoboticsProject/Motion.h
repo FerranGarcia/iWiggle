@@ -18,6 +18,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <math.h>
+
 
 using namespace std;
 
@@ -31,14 +33,23 @@ public:
 
 	FILE *port;
 
-
+	// Constructor
 	Motion(void);
 	void resetEncoders(void);
-	long readEncoderValues(void);
+	long int readEncoderValueLeft(void);
+	long int readEncoderValueRight(void);
+
 	void driveMotors(int, int);
 	void stopMotors(void);
 	void turnLeft(int);
 	void turnRight(int);
-	
+	void turnAngle(int, int);
+
+	float getHeading(void);
+
+	// Destructor
 	~Motion(void);
+private:
+	static const int wheelRadius = 50; // mm
+	static const int wheelBase = 224;  // mm, distance between wheels
 };

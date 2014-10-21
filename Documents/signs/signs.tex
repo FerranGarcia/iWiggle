@@ -1,0 +1,97 @@
+\documentclass{article}
+\usepackage{tikz}
+
+\usepackage[top=1cm, bottom=1cm, left=1cm, right=1cm]{geometry}
+
+\begin{document}
+\thispagestyle{empty}
+\newcommand{\pos}{7}
+\newcommand{\bod}{2}
+\newcommand{\bodLen}{13}
+\newcommand{\eh}{2}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% first version, one color
+
+\begin{figure}[!c]
+	\centering
+	\begin{tikzpicture}
+	
+	\fill[color=red] (-\pos,0) -- (0,\pos) -- (\pos,0)-- (-\pos,0);
+	\fill[color=red] (-\bod,0) -- (\bod,0) -- (\bod,-\bodLen)-- (-\bod,-\bodLen);
+	
+	\end{tikzpicture}
+\end{figure}
+
+
+\clearpage
+\thispagestyle{empty}
+\begin{figure}[!c]
+	\centering
+	\begin{tikzpicture}
+	\fill[color=red] (0,0) circle (\pos);
+	\end{tikzpicture}
+\end{figure}
+
+
+\clearpage
+\thispagestyle{empty}
+\begin{figure}[!c]
+	\centering
+	\begin{tikzpicture}[rotate=45]
+	\fill[color=red] (-\pos, -\pos/3)  -- (-\pos, \pos/3) -- (\pos, \pos/3)  -- (\pos, -\pos/3);
+	\fill[color=red] (-\pos/3,-\pos)  -- (\pos/3,-\pos) -- (\pos/3,\pos)  -- (-\pos/3,\pos); 
+	\end{tikzpicture}
+\end{figure}
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% second version, with blue boundaries around
+\clearpage
+\pagestyle{empty}
+
+\begin{figure}[!c]
+	\centering
+	\begin{tikzpicture}[scale=0.9]
+	\begin{scope}
+		\fill[color=blue] (-\pos-2*\eh,-\eh) -- (0, 1.41*\eh+\pos) -- (2*\eh+\pos, -\eh);
+		\fill[color=blue] (-\eh-\bod,0) -- (\eh+\bod,0) -- (\eh+\bod, -\eh-\bodLen)-- (-\eh-\bod,-\eh-\bodLen);
+	\end{scope}
+	
+	\fill[color=red] (-\pos,0) -- (0,\pos) -- (\pos,0)-- (-\pos,0);
+	
+	
+	\fill[color=red] (-\bod,0) -- (\bod,0) -- (\bod,-\bodLen)-- (-\bod,-\bodLen);
+	
+
+	\end{tikzpicture}
+\end{figure}
+
+
+\clearpage
+\thispagestyle{empty}
+\begin{figure}[!c]
+	\centering
+	\begin{tikzpicture}
+	\fill[color=blue] (0,0) circle (\pos+\eh);
+	\fill[color=red] (0,0) circle (\pos);
+	\end{tikzpicture}
+\end{figure}
+
+
+\clearpage
+\thispagestyle{empty}
+\begin{figure}[!c]
+	\centering
+	\begin{tikzpicture}[rotate=45]
+		\fill[color=blue] (-\pos-\eh, -\eh-\pos/3)  -- (-\eh-\pos, \eh+\pos/3) -- (\eh+\pos, \eh+\pos/3)  -- (\eh+\pos, -\eh-\pos/3);
+		\fill[color=blue] (-\eh-\pos/3,-\eh-\pos)  -- (\eh+\pos/3,-\eh-\pos) -- (\eh+\pos/3,\eh+\pos)  -- (-\eh-\pos/3,\eh+\pos); 
+	\fill[color=red] (-\pos, -\pos/3)  -- (-\pos, \pos/3) -- (\pos, \pos/3)  -- (\pos, -\pos/3);
+	\fill[color=red] (-\pos/3,-\pos)  -- (\pos/3,-\pos) -- (\pos/3,\pos)  -- (-\pos/3,\pos); 
+
+	\end{tikzpicture}
+\end{figure}
+
+
+
+\end{document}
