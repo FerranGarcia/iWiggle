@@ -75,6 +75,7 @@ Makefile*
 [Rr]eleases/
 
 # Visual C++ cache files
+*.tlog
 ipch/
 *.aps
 *.ncb
