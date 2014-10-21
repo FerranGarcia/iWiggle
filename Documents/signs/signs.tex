@@ -7,7 +7,7 @@
 \thispagestyle{empty}
 \newcommand{\pos}{7}
 \newcommand{\bod}{2}
-\newcommand{\bodLen}{13}
+\newcommand{\bodLen}{15}
 \newcommand{\eh}{2}
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
@@ -17,7 +17,7 @@
 	\centering
 	\begin{tikzpicture}
 	
-	\fill[color=red] (-\pos,0) -- (0,\pos) -- (\pos,0)-- (-\pos,0);
+	\fill[color=red] (-\pos,0) -- (0,\pos+\eh) -- (\pos,0)-- (-\pos,0);
 	\fill[color=red] (-\bod,0) -- (\bod,0) -- (\bod,-\bodLen)-- (-\bod,-\bodLen);
 	
 	\end{tikzpicture}
@@ -39,8 +39,8 @@
 \begin{figure}[!c]
 	\centering
 	\begin{tikzpicture}[rotate=45]
-	\fill[color=red] (-\pos, -\pos/3)  -- (-\pos, \pos/3) -- (\pos, \pos/3)  -- (\pos, -\pos/3);
-	\fill[color=red] (-\pos/3,-\pos)  -- (\pos/3,-\pos) -- (\pos/3,\pos)  -- (-\pos/3,\pos); 
+	\fill[color=red] (-\pos, -\bod)  -- (-\pos, \bod) -- (\pos, \bod)  -- (\pos, -\bod);
+	\fill[color=red] (-\bod,-\pos)  -- (\bod,-\pos) -- (\bod,\pos)  -- (-\bod,\pos); 
 	\end{tikzpicture}
 \end{figure}
 
@@ -54,13 +54,11 @@
 	\centering
 	\begin{tikzpicture}[scale=0.9]
 	\begin{scope}
-		\fill[color=blue] (-\pos-2*\eh,-\eh) -- (0, 1.41*\eh+\pos) -- (2*\eh+\pos, -\eh);
+		\fill[color=blue] (-\pos-2*\eh,-\eh) -- (0, 2.41*\eh+\pos) -- (2*\eh+\pos, -\eh);
 		\fill[color=blue] (-\eh-\bod,0) -- (\eh+\bod,0) -- (\eh+\bod, -\eh-\bodLen)-- (-\eh-\bod,-\eh-\bodLen);
 	\end{scope}
 	
-	\fill[color=red] (-\pos,0) -- (0,\pos) -- (\pos,0)-- (-\pos,0);
-	
-	
+	\fill[color=red] (-\pos,0) -- (0,\pos+\eh) -- (\pos,0)-- (-\pos,0);
 	\fill[color=red] (-\bod,0) -- (\bod,0) -- (\bod,-\bodLen)-- (-\bod,-\bodLen);
 	
 
@@ -84,10 +82,11 @@
 \begin{figure}[!c]
 	\centering
 	\begin{tikzpicture}[rotate=45]
-		\fill[color=blue] (-\pos-\eh, -\eh-\pos/3)  -- (-\eh-\pos, \eh+\pos/3) -- (\eh+\pos, \eh+\pos/3)  -- (\eh+\pos, -\eh-\pos/3);
-		\fill[color=blue] (-\eh-\pos/3,-\eh-\pos)  -- (\eh+\pos/3,-\eh-\pos) -- (\eh+\pos/3,\eh+\pos)  -- (-\eh-\pos/3,\eh+\pos); 
-	\fill[color=red] (-\pos, -\pos/3)  -- (-\pos, \pos/3) -- (\pos, \pos/3)  -- (\pos, -\pos/3);
-	\fill[color=red] (-\pos/3,-\pos)  -- (\pos/3,-\pos) -- (\pos/3,\pos)  -- (-\pos/3,\pos); 
+		\fill[color=blue] (-\pos-\eh, -\eh-\bod)  -- (-\eh-\pos, \eh+\bod) -- (\eh+\pos, \eh+\bod)  -- (\eh+\pos, -\eh-\bod);
+		\fill[color=blue] (-\eh-\bod,-\eh-\pos)  -- (\eh+\bod,-\eh-\pos) -- (\eh+\bod,\eh+\pos)  -- (-\eh-\bod,\eh+\pos); 
+		
+	\fill[color=red] (-\pos, -\bod)  -- (-\pos, \bod) -- (\pos, \bod)  -- (\pos, -\bod);
+	\fill[color=red] (-\bod,-\pos)  -- (\bod,-\pos) -- (\bod,\pos)  -- (-\bod,\pos); 
 
 	\end{tikzpicture}
 \end{figure}
