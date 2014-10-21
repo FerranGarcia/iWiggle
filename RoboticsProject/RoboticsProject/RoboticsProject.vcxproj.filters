@@ -30,14 +30,13 @@
     <ClInclude Include="Motion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="StateMachine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SignInstance.h">
-=======
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="distSensor.h">
->>>>>>> cd069318c7fdbe027d201ac82124de477c39d465
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Lcd.h">
@@ -57,14 +56,13 @@
     <ClCompile Include="Motion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="StateMachine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SignInstance.cpp">
-=======
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="distSensor.cpp">
->>>>>>> cd069318c7fdbe027d201ac82124de477c39d465
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Lcd.cpp">

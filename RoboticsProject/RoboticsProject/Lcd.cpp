@@ -4,7 +4,8 @@ Lcd::Lcd(void)
 {
 	this->fileName = "/dev/i2c-1";
 	this->address = 0x63;
-	
+
+#ifdef __linux__
 	this->port = fopen(fileName,"r+");										// Open port for reading and writing
 	if (this->port == NULL){
 		printf("Failed to open i2c port\n");
@@ -25,6 +26,7 @@ Lcd::Lcd(void)
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+#endif
 }
 
 void Lcd::sendText(char* text){
@@ -33,11 +35,13 @@ void Lcd::sendText(char* text){
 	// because text must be sent to the command register (0), however if a non zero is recieved
 	// first anything after that point is displayed on the screen. The leading space
 	// ensures all text will be displayed.
-				
+
+#ifdef __linux__
 	if ((write(fd, text, strlen(text))) != strlen(text)) {					
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+#endif
 }
 
 Lcd::~Lcd(void)
