@@ -1,0 +1,96 @@
+\documentclass[10pt,twocolumn]{article}
+
+\usepackage[backend=bibtex]{biblatex}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{anysize}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{algorithm2e}
+\usepackage{pgfplots}
+\usepackage{hyperref}
+\bibliography{bibliography.bib}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mypurple}{rgb}{0.58,0,0.82}
+
+\usepackage{listings}
+
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox[c]{\textwidth}{#1#2#3}}}
+
+\setlength\parindent{0pt}
+\setlength{\parskip}{10pt}
+
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\begin{document}
+
+\twocolumn[%
+%  Title and authors
+   \begin{center}
+     {\huge\bfseries B31XP Robotics project\\ Robotic object follower}\\
+      \vspace{2ex}
+      \textsc{Andrey Pak, Donatas Kozlovskis, Enric Cornellà,\\ Fernando Garcia,  Igor Peric}
+   \end{center}
+   \vspace{2ex}%
+]
+%  Abstract
+\begin{abstract}
+This project presents a small demonstration robot system, that is able to read coloured markers on the floor and implement the associated actions, e.g. stop, turn, pause, etc.
+A first design of the robot hardware uses Raspberry Pi to control a set of
+motors, sensors and servo actuators. The project goal was to review the hardware design,
+add a Raspberry Pi camera and implement the software in C++ and OpenCV, where despite of computational constraints, the image processing must be efficient and fast.
+\end{abstract}
+
+\section{Introduction}
+
+\textbf{Sign uses}:\\
+Arrow – direction to go\\
+Stop – sign for pause\\
+Circle – goal \\
+
+At the beginning robot should rotate in a place around itself.
+At the time the sign is dropped in robot field of view (defined by camera position, limitations and user setup), sign should be detected, and robot should approach until the sign to be close enough to save and evaluate recognized action.
+If any obstacle is faced in front of the robot, robot should start rotating all around (start state, or no-command state) until next arrow is detected guiding to the final goal.
+
+Future work:
+Wiggle movement
+Speaker, sound feedback
+When circle is detected, tilt camera, or go to front to find the QR code.
+
+\section{Hardware}
+
+\section{Working principle}
+
+\section{Implementation}
+
+
+\subsection{Algorithm Solution}
+
+
+\subsection{Graphical User Interface}
+
+
+
+
+
+\section{Tests and results}
+
+\section{Conclusions}
+
+\section{Problems faced}
+
+
+\clearpage
+
+
+\end{document}
