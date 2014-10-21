@@ -40,6 +40,9 @@
 >>>>>>> cd069318c7fdbe027d201ac82124de477c39d465
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Lcd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -62,6 +65,9 @@
 =======
     <ClCompile Include="distSensor.cpp">
 >>>>>>> cd069318c7fdbe027d201ac82124de477c39d465
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lcd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -86,11 +86,11 @@ unsigned int distSensor::getDistance(void)
 		result = (highByte << 8) + lowByte;			// Calculate range
 	}
 
-	return result;
-
 #else
 	cout << "Obtaining measurement from ultrasonic sensor" << endl;
 #endif
+
+	return result;
 }
 
 distSensor::~distSensor(void)
