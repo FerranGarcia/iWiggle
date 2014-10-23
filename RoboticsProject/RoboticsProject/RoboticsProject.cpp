@@ -83,19 +83,11 @@ int _tmain(int argc, _TCHAR* argv[])
 				cout << "CIRCLE" << endl;
 				break;
 			case SignTypeEnum::ARROW:
-
-				cout << "ARROW [" ;
-
-				// suppose it's an arrow, extract angle
-				arrow_angle = imageProcessor.getArrowAngle(sign_contour, &cropped_binary);
-				cout << arrow_angle << " ]" << endl;
-
+				cout << "ARROW [" << detectedSign->arrowAngle << " ]" << endl;
 				break;
-
 			case SignTypeEnum::STOP:
 				cout << "STOP" << endl;
 				break;
-
 			default:
 				break;
 			}

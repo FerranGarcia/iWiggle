@@ -102,6 +102,7 @@ SignInstance* ImageProcessor::recognizeSign(Mat* croppedInput, vector<Point> *co
 
 	if (distance > croppedInput->size().width * 0.05) {
 		returnSign->signType = ARROW;
+		returnSign->arrowAngle = this->getArrowAngle(contour, croppedInput);
 	}
 	else { // distinguish between circle and cross
 		double total_area = croppedInput->size().area();

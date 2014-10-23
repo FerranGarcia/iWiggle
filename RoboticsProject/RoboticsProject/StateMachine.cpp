@@ -51,6 +51,11 @@ void StateMachine::Tick() {
 		this->resultingAngular = 0;
 		this->resultingLinear = 0;
 
+		// state exit condition
+		if (this->lastSeenSign == NULL) {
+			currentState = MARCHING_FORWARD;
+		}
+
 		break;
 
 	case WIGGLING :
@@ -81,14 +86,45 @@ void StateMachine::Tick() {
 		// STATE SWITCH CONDITION
 		// if last seen sign is inside close area, start executing command
 		if (lastSeenSign != NULL && lastSeenSign->signArea == SIGN_AREA_CLOSE) {
+			// allocate memory for the new sign, since this->lastSign gets deleted after 3 seconds
+			this->targetSign = new SignInstance(lastSeenSign);
+			// start executing the command
 			this->currentState = EXECUTING_COMMAND;
 		}
 
 		break;
 	case EXECUTING_COMMAND :
 
+		switch (this->targetSign->signType) {
+		case STOP :
+
+			break;
+
+		case WAYPOINT :
+
+			std::cout << "//--------- GOAL REACHED! ----------//" << std::endl;
+			this->currentState = GAME_OVER;
+			break;
+		}
+
+
 		break;
 
+	case MARCHING_FORWARD :
+
+		this->resultingAngular = 0;
+		this->resultingLinear = 100;
+
+		// check exit conditions
+		if (lastSeenSign != NULL && lastSeenSign->signArea == SIGN_AREA_DETECTION) {
+			this->currentState = APPROACHING_SIGN;
+		}
+
+		break;
+
+	case GAME_OVER:
+
+		break;
 	}
 
 }

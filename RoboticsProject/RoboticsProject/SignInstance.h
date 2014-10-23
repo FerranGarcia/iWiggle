@@ -26,6 +26,7 @@ class SignInstance
 
 public:
 	SignInstance();
+	SignInstance(SignInstance *original); // copy constructor
 	~SignInstance();
 
 	SignTypeEnum signType;
@@ -41,5 +42,7 @@ public:
 	cv::Point2f centerOfImage;
 
 	int reliabilityCount;
+
+	double arrowAngle;
 };
 

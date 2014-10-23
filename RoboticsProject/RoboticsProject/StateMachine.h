@@ -12,15 +12,21 @@
 
 enum StateEnum
 {
-	IDLE,
-	WIGGLING,
-	APPROACHING_SIGN,
-	EXECUTING_COMMAND
+	IDLE, // speeds = 0, waiting for the sign to go away from view
+	WIGGLING, // rotating with linear speed = 0, waiting for sign to be put in view
+	APPROACHING_SIGN, // linear speed = constant forward, adjusting angular speed to keep sign in the center
+	EXECUTING_COMMAND, // approached the sign, rotating to align with angle
+	MARCHING_FORWARD, // angular speed = 0, linear = constant
+	GAME_OVER // game finished, robot doesn't do anything
 };
 
 class StateMachine
 {
 	cv::Size cameraImageSize;
+
+	// store desired angle of rotation for COMMAND_EXECUTION state
+	// (the detected arrow angle)
+	SignInstance *targetSign;
 
 public:
 	StateMachine(cv::Size cameraImageSize);
