@@ -6,6 +6,7 @@
 #include "ImageProcessor.h"
 #include "StateMachine.h"
 #include "SignInstance.h"
+#include "NNHelpers.h"
 
 using namespace cv;
 using namespace std;
@@ -30,6 +31,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	Mat thresholded;
 	vector<Point> *sign_contour;
+	SignInstance* detectedSign = NULL;
 
 	for (;;)
 	{
@@ -49,7 +51,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			Mat cropped_binary = (thresholded)(sign_location);
 
 			// check which object it is
-			SignInstance* detectedSign = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
+			detectedSign = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
 
 			stateMachine.FeedSign(detectedSign);
 			//stateMachine.FeedDistanceSensor(distances);
@@ -59,7 +61,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			stateMachine.Tick();
 
 			// ----------------------------- SHOW OUTPUT ----------------------------//
-
+			
 			cout << "[ OUT ] CURRENT STATE: ";
 			switch (stateMachine.currentState) {
 				case IDLE: cout << "IDLE" << endl; break;
@@ -112,7 +114,69 @@ int _tmain(int argc, _TCHAR* argv[])
 		cv::imshow("thresholded", thresholded);
 		cv::imshow("original", frame);
 
-		if (waitKey(30) >= 0) break;
+		char key_code;
+		string file_path = "C:/Users/Igor/Documents/iwiggle/RoboticsProject/Debug/groundtruth/";
+		if ((key_code = waitKey(30)) >= 0) {
+
+			bool saving = false;
+
+			// check which key is pressed
+			switch (key_code) {
+				// Q - arrow
+				case 'q':
+					//cout << "[KEY] Q" << endl;
+					file_path += "arrow/";
+					saving = true;
+					break;
+
+				// W - cross
+				case 'w':
+					file_path += "cross/";
+					saving = true;
+					//cout << "[KEY] W" << endl;
+					break;
+
+				// E - circle
+				case 'e':
+					file_path += "circle/";
+					saving = true;
+					//cout << "[KEY] E" << endl;
+					break;
+			
+				// R - no sign
+				case 'r':
+					file_path += "nosign/";
+					saving = true;
+					//cout << "[KEY] R" << endl;
+					break;
+
+				default:
+					break;
+			}
+
+			// if image needs to be saved localy (one of the four category keys was pressed
+			if (saving) {
+				// generate random filename
+				string *randomName = NNHelpers::getRandomString(20);
+				//cout << "[ FILENAME ]: " << *randomName << endl;
+				file_path += *randomName;
+				file_path += ".jpg";
+				
+				// save the image
+				if (detectedSign != NULL) {
+					cout << " [ FILE ] Writing to: " << file_path << " ---> ";
+					try {
+						imwrite(file_path, *detectedSign->thresholdedMat);
+					}
+					catch (runtime_error& ex) {
+						fprintf(stderr, "Exception: %s\n", ex.what());
+						return 1;
+					}
+				}
+
+				delete randomName;
+			}
+		}
 	}
 	// the camera will be deinitialized automatically in VideoCapture destructor
 	return 0;

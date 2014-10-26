@@ -31,10 +31,10 @@ void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 	Mat channelV = channels[2];
 
 	Mat hue1, hue2, sat, val1, val2;
-	threshold(channelH, hue1, 5, 255, THRESH_BINARY_INV);
+	threshold(channelH, hue1, 10, 255, THRESH_BINARY_INV);
 	threshold(channelH, hue2, 170, 255, THRESH_BINARY);
 
-	threshold(channelS, sat, 70, 255, THRESH_BINARY);
+	threshold(channelS, sat, 40, 255, THRESH_BINARY);
 
 	//equalizeHist(channelV, channelV);
 
@@ -94,6 +94,7 @@ vector<Point>* ImageProcessor::getLocationOfObject(Mat *binaryInput) {
 SignInstance* ImageProcessor::recognizeSign(Mat* croppedInput, vector<Point> *contour) {
 
 	SignInstance *returnSign = new SignInstance();
+	returnSign->thresholdedMat = new Mat(*croppedInput);
 
 	returnSign->centerOfMass = getMassCenter(croppedInput);
 	returnSign->centerOfImage = cv::Point2f(croppedInput->size().width / 2, croppedInput->size().height / 2);
