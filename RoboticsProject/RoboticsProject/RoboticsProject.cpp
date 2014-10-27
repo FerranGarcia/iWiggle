@@ -31,9 +31,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	StateMachine stateMachine(cv::Size(320, 240));
 
-	Motion motion();
+	Motion motion;
 
-	distSensor distSensor();
+	distSensor distSensor;
 
 	Mat thresholded;
 	vector<Point> *sign_contour;
@@ -77,6 +77,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 			cout << "[ OUT ] Resulting linear speed: " << stateMachine.resultingLinear << endl;
 			cout << "[ OUT ] Resulting angular speed: " << stateMachine.resultingAngular << endl;
+
+			// Assign computed speeds by the State Machine to the motors
+			motion.driveMotors(stateMachine.resultingLinear,stateMachine.resultingAngular);
 
 			Point2f mass_center = detectedSign->centerOfMass;
 			focus = frame(sign_location);
