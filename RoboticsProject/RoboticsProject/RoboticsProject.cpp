@@ -7,6 +7,8 @@
 #include "StateMachine.h"
 #include "SignInstance.h"
 #include "NNHelpers.h"
+#include "Motion.h"
+#include "distSensor.h"
 
 using namespace cv;
 using namespace std;
@@ -28,6 +30,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	imageProcessor.proximityArea = cv::Rect(50, 160, 210, 70);
 
 	StateMachine stateMachine(cv::Size(320, 240));
+
+	Motion motion();
+
+	distSensor distSensor();
 
 	Mat thresholded;
 	vector<Point> *sign_contour;
