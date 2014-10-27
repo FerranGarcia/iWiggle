@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "NNHelpers.h"
+#include <cstdlib>
 
 NNHelpers::NNHelpers()
 {

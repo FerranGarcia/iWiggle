@@ -4,11 +4,13 @@
 //
 
 #pragma once
-
+#ifdef __linux__
+#else 
 #include "targetver.h"
-
-#include <stdio.h>
 #include <tchar.h>
+#endif
+#include <stdio.h>
+
 
 
 

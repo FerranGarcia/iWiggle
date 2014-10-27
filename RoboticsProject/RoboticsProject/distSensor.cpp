@@ -3,7 +3,7 @@
 distSensor::distSensor(void)
 {
 													
-	this->fileName = "/dev/i2c-1";								// Name of the port we will be using
+	this->fileName = (char *)"/dev/i2c-1";								// Name of the port we will be using
 	this->address = 0x70;										// Address of the SRF08 shifted right 1 bit
 	unsigned char buf[10];										// Buffer for data being read/ written on the i2c bus
 

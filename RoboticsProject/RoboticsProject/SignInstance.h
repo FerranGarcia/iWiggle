@@ -3,8 +3,11 @@
 #define SIGN_RELIABILITY_COUNT 10
 
 #include <ctime>
+#ifdef __linux__
+#include "opencv.hpp"
+#else
 #include "opencv2\opencv.hpp"
-
+#endif
 // types of objects
 enum SignTypeEnum
 {

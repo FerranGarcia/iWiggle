@@ -1,22 +1,43 @@
 // RoboticsProject.cpp : Defines the entry point for the console application.
 //
 #include "stdafx.h"
-#include "opencv2\opencv.hpp"
-
 #include "ImageProcessor.h"
 #include "StateMachine.h"
 #include "SignInstance.h"
 #include "NNHelpers.h"
 
+#ifdef __linux__
+#include "opencv.hpp"
+#include "raspicam_cv.h"
+#else 
+#include "opencv2\opencv.hpp"
+#endif
+
 using namespace cv;
 using namespace std;
 
+#ifdef __linux__
+int main(int argc, char* argv[])
+#else
 int _tmain(int argc, _TCHAR* argv[])
+#endif
 {
+#ifdef __linux__
+		// Raspberry Pi Camera Test Code
+	raspicam::RaspiCam_Cv rpicam;
+	rpicam.set(CV_CAP_PROP_FRAME_WIDTH,160);
+	rpicam.set(CV_CAP_PROP_FRAME_HEIGHT,120);
+	//rpicam.set(CV_CAP_PROP_SATURATION, 100);
+	if (!rpicam.open()) {
+		cerr<<"Error opening the camera"<<endl;
+		return -1;
+	}
+#else
 	VideoCapture cap(0); // open the default camera
 	if (!cap.isOpened())  // check if we succeeded
 		return -1;
-
+#endif
+	
 	Mat edges;
 	namedWindow("focus", 3);
 	namedWindow("original", 2);
@@ -36,8 +57,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	for (;;)
 	{
 		Mat frame;
+#ifdef __linux__
+		rpicam.grab();
+		rpicam.retrieve(frame);
+#else
 		cap >> frame; // get a new frame from camera
-
+#endif
 		imageProcessor.getThresholdedImage(&frame, &thresholded);
 		sign_contour = imageProcessor.getLocationOfObject(&thresholded);
 		Mat focus(Size(128, 128), CV_8UC3);
@@ -81,13 +106,14 @@ int _tmain(int argc, _TCHAR* argv[])
 			
 			switch (detectedSign->signType)
 			{
-			case SignTypeEnum::WAYPOINT:
+			case WAYPOINT:
+			//case SignTypeEnum::WAYPOINT:
 				cout << "CIRCLE" << endl;
 				break;
-			case SignTypeEnum::ARROW:
+			case ARROW:
 				cout << "ARROW [" << detectedSign->arrowAngle << " ]" << endl;
 				break;
-			case SignTypeEnum::STOP:
+			case STOP:
 				cout << "STOP" << endl;
 				break;
 			default:
@@ -165,6 +191,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				// save the image
 				if (detectedSign != NULL) {
 					cout << " [ FILE ] Writing to: " << file_path << " ---> ";
+#ifdef __linux__
+#else
 					try {
 						imwrite(file_path, *detectedSign->thresholdedMat);
 					}
@@ -172,6 +200,7 @@ int _tmain(int argc, _TCHAR* argv[])
 						fprintf(stderr, "Exception: %s\n", ex.what());
 						return 1;
 					}
+#endif
 				}
 
 				delete randomName;
@@ -179,6 +208,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	}
 	// the camera will be deinitialized automatically in VideoCapture destructor
+#ifdef __linux__
+	rpicam.release();
+#endif
 	return 0;
 }
 

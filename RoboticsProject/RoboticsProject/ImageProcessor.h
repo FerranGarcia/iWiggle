@@ -1,6 +1,11 @@
 #pragma once
 
+#ifdef __linux__
+#include "opencv.hpp"
+#else 
 #include "opencv2\opencv.hpp"
+#endif
+
 #include "SignInstance.h"
 
 using namespace cv;

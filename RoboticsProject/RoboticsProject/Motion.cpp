@@ -250,7 +250,7 @@ float Motion::getHeading(void){
 	//calculate heading in angles
 	heading = wheelRadius / wheelBase * counterDiff;
 	// wrap to range (-180;180]
-	heading = ((heading + 180) % 360) - 180;
+	heading = ( heading - 360*floor( (heading + 180)/360 )) - 180;
 #else 
 	cout << "[ INFO ] Returning robot heading" << endl;
 #endif
