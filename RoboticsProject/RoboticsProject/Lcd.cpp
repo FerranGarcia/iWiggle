@@ -2,7 +2,7 @@
 
 Lcd::Lcd(void)
 {
-	this->fileName = "/dev/i2c-1";
+	this->fileName = (char *)"/dev/i2c-1";
 	this->address = 0x63;
 
 #ifdef __linux__
