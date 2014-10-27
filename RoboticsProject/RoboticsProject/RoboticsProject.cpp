@@ -30,11 +30,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	imageProcessor.proximityArea = cv::Rect(50, 160, 210, 70);
 
 	StateMachine stateMachine(cv::Size(320, 240));
-
+	
+#ifdef __linux__
 	Motion motion;
 
 	distSensor distSensor;
-
+#endif
 	Mat thresholded;
 	vector<Point> *sign_contour;
 	SignInstance* detectedSign = NULL;
@@ -78,8 +79,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			cout << "[ OUT ] Resulting linear speed: " << stateMachine.resultingLinear << endl;
 			cout << "[ OUT ] Resulting angular speed: " << stateMachine.resultingAngular << endl;
 
+#ifdef __linux__
 			// Assign computed speeds by the State Machine to the motors
 			motion.driveMotors(stateMachine.resultingLinear,stateMachine.resultingAngular);
+#endif
 
 			Point2f mass_center = detectedSign->centerOfMass;
 			focus = frame(sign_location);
