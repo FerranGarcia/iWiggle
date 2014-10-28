@@ -53,7 +53,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	StateMachine stateMachine(cv::Size(320, 240));
 
 #ifdef __linux__
-	distSensor distSensor;
+	distSensor distSens1;
 #endif
 
 	
@@ -86,7 +86,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			// check which object it is
 			detectedSign = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
 			stateMachine.FeedSign(detectedSign);
-			//stateMachine.FeedDistanceSensor(distances);
+#ifdef __linux__
+			stateMachine.FeedDistanceSensor(distSens1.getDistance());
+#endif
 			//stateMachine.FeedAngle(angle);
 
 
