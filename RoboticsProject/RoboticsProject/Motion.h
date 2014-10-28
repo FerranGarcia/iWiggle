@@ -45,7 +45,7 @@ public:
 	void turnRight(int);
 	void turnAngle(int, int);
 	double constrainAngle(double x);
-	float getHeading(void);
+	double getHeading(void);
 
 	// Destructor
 	~Motion(void);

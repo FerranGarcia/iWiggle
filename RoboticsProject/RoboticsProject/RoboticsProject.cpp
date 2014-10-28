@@ -87,7 +87,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			detectedSign = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
 			stateMachine.FeedSign(detectedSign);
 #ifdef __linux__
-			stateMachine.FeedDistanceSensor(distSens1.getDistance());
+			//stateMachine.FeedDistanceSensor(distSens1.getDistance());
 #endif
 			//stateMachine.FeedAngle(angle);
 

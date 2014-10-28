@@ -64,7 +64,7 @@ void StateMachine::Tick() {
 
 		// rotate right
 		resultingLinear = 0;
-		resultingAngular = 100;
+		resultingAngular = 5;
 
 		// STATE SWITCH CONDITION
 		// if last seen sign is reliable, start approaching it
@@ -78,11 +78,11 @@ void StateMachine::Tick() {
 
 		if (lastSeenSign != NULL) {
 			// compute the resulting linear speed
-			this->resultingLinear = 70;
+			this->resultingLinear = 8;
 			// compute the resulting angular speed
 			double cameraHorCenter = this->cameraImageSize.width / 2;
 			this->resultingAngular = -(lastSeenSign->location.x + lastSeenSign->location.width / 2 - cameraHorCenter)
-				* (100.0 / cameraHorCenter);
+				* (5.0 / cameraHorCenter);
 		}
 
 		// STATE SWITCH CONDITION
@@ -115,27 +115,33 @@ void StateMachine::Tick() {
 
 		case ARROW :
 
-			float angleToTurn = this->lastSeenSign->arrowAngle - 90;
+			double angleToTurn = this->lastSeenSign->arrowAngle - 90;
 			angleToTurn = motion.constrainAngle(angleToTurn);
 			std::cout << "//-------Angle to turn: " << angleToTurn << std::endl;
 
-			float turnSpeed = 50;
 			float headingCurrent = motion.getHeading();
-			std::cout << "Heading" << headingCurrent << std::endl;
+			this->resultingAngular = 5;
+
+			std::cout << "Current robot Heading: " << headingCurrent << std::endl;
 #ifdef __linux__
-			usleep(5000000); // wait 5 seconds for the next function call
+			usleep(5000000);
+#endif
+			std::cout << "//--------- Angle turn started --------//" << std::endl;
+			motion.turnAngle(angleToTurn, 5);
+			std::cout << "//--------- Angle turn completed ------//" << std::endl;
+#ifdef __linux__
+			usleep(5000000);
 #endif
 			this->currentState = MARCHING_FORWARD;
 			break;
 		}
-
 
 		break;
 
 	case MARCHING_FORWARD :
 
 		this->resultingAngular = 0;
-		this->resultingLinear = 100;
+		this->resultingLinear = 8;
 
 		// check exit conditions
 		if (lastSeenSign != NULL && lastSeenSign->signArea == SIGN_AREA_DETECTION) {
@@ -152,5 +158,7 @@ void StateMachine::Tick() {
 #ifdef __linux__
 	// Assign computed speeds by the State Machine to the motors
 	motion.driveMotors(this->resultingLinear, this->resultingAngular);
+	this->lastKnownAngle = motion.getHeading();
+	std::cout << "[ OUT ] Last known angle: " << this->lastKnownAngle << std::endl;
 #endif
 }

@@ -225,7 +225,7 @@ void Motion::turnAngle(int angle, int speed){
 
 	resetEncoders();											// Reset the encoder values to 0
 
-	while (readEncoderValueLeft() < encoderCount) {						// Check the value of encoder 1 and stop after it has traveled a set distance
+	while (abs(readEncoderValueLeft()) < abs(encoderCount)) {						// Check the value of encoder 1 and stop after it has traveled a set distance
     //printf("Left: %lu , Right: %lu \n",readEncoderValueLeft(), readEncoderValueRight());
 		driveMotors(0, angularSpeed);
 		usleep(2000);
@@ -238,22 +238,21 @@ void Motion::turnAngle(int angle, int speed){
 
 }
 
-float Motion::getHeading(void){
-	float heading = 9999;
-#ifdef __linux__
+double Motion::getHeading(void){
+	double heading = 9999; //default impossible rotation angle
+
 	// Read encoders
 	long int counterLeft = readEncoderValueLeft();
 	long int counterRight = readEncoderValueRight();
-	// get difference
-	int counterDiff = counterRight - counterLeft;
-	
+	// get difference of encoder positions
+	long int counterDiff = counterRight - counterLeft;
+
 	//calculate heading in angles
-	heading = wheelRadius / wheelBase * counterDiff;
+	heading =(double)wheelRadius / wheelBase * counterDiff;
+
 	// wrap to range (-180;180]
 	heading = constrainAngle(heading);
-#else 
-	cout << "[ INFO ] Returning robot heading" << endl;
-#endif
+
 	return heading;
 }
 
@@ -264,5 +263,6 @@ double Motion::constrainAngle(double x){
 	return x - 180;
 }
 
+// Destructor
 Motion::~Motion(void){
 }
