@@ -13,6 +13,7 @@ ImageProcessor::~ImageProcessor()
 
 void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 	
+	//???No need to resize image since we resizing input from PiCam
 	resize(*input, *input, Size(320, 240));
 
 	GaussianBlur(*input, *input, Size(1, 1), 1.0);

@@ -250,11 +250,18 @@ float Motion::getHeading(void){
 	//calculate heading in angles
 	heading = wheelRadius / wheelBase * counterDiff;
 	// wrap to range (-180;180]
-	heading = ( heading - 360*floor( (heading + 180)/360 )) - 180;
+	heading = constrainAngle(heading);
 #else 
 	cout << "[ INFO ] Returning robot heading" << endl;
 #endif
 	return heading;
+}
+
+double Motion::constrainAngle(double x){
+	x = fmod(x + 180, 360);
+	if (x < 0)
+		x += 360;
+	return x - 180;
 }
 
 Motion::~Motion(void){

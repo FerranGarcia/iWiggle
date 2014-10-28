@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ImageProcessor.h"
+#include "Motion.h"
 
 // when distance bellow this one is reported by distance sensor
 // consider that you're close to the wall
@@ -44,5 +45,6 @@ public:
 
 	double lastKnownAngle;
 	SignInstance *lastSeenSign;
+	Motion motion;
 };
 

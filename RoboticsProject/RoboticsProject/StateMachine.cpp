@@ -2,12 +2,14 @@
 #include "StateMachine.h"
 
 
+
 StateMachine::StateMachine(cv::Size cameraImageSize)
 {
 	this->currentState = WIGGLING;
-
+	this->lastSeenSign = NULL;
 	// save image size for control of the angular speed
 	this->cameraImageSize = cameraImageSize;
+	motion = Motion();
 }
 
 StateMachine::~StateMachine()
@@ -79,7 +81,7 @@ void StateMachine::Tick() {
 			this->resultingLinear = 70;
 			// compute the resulting angular speed
 			double cameraHorCenter = this->cameraImageSize.width / 2;
-			this->resultingAngular = (lastSeenSign->location.x + lastSeenSign->location.width / 2 - cameraHorCenter)
+			this->resultingAngular = -(lastSeenSign->location.x + lastSeenSign->location.width / 2 - cameraHorCenter)
 				* (100.0 / cameraHorCenter);
 		}
 
@@ -98,12 +100,32 @@ void StateMachine::Tick() {
 		switch (this->targetSign->signType) {
 		case STOP :
 
+			motion.stopMotors();
+#ifdef __linux__
+			usleep(5000000); // wait 5 seconds for the next function call
+#endif
+			this->currentState = MARCHING_FORWARD;
 			break;
 
 		case WAYPOINT :
 
 			std::cout << "//--------- GOAL REACHED! ----------//" << std::endl;
 			this->currentState = GAME_OVER;
+			break;
+
+		case ARROW :
+
+			float angleToTurn = this->lastSeenSign->arrowAngle - 90;
+			angleToTurn = motion.constrainAngle(angleToTurn);
+			std::cout << "//-------Angle to turn: " << angleToTurn << std::endl;
+
+			float turnSpeed = 50;
+			float headingCurrent = motion.getHeading();
+			std::cout << "Heading" << headingCurrent << std::endl;
+#ifdef __linux__
+			usleep(5000000); // wait 5 seconds for the next function call
+#endif
+			this->currentState = MARCHING_FORWARD;
 			break;
 		}
 
@@ -123,8 +145,12 @@ void StateMachine::Tick() {
 		break;
 
 	case GAME_OVER:
-
+		exit(0);
 		break;
 	}
 
+#ifdef __linux__
+	// Assign computed speeds by the State Machine to the motors
+	motion.driveMotors(this->resultingLinear, this->resultingAngular);
+#endif
 }

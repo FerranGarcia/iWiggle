@@ -51,12 +51,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	imageProcessor.proximityArea = cv::Rect(50, 160, 210, 70);
 
 	StateMachine stateMachine(cv::Size(320, 240));
-	
-#ifdef __linux__
-	Motion motion;
 
+#ifdef __linux__
 	distSensor distSensor;
 #endif
+
+	
+
 	Mat thresholded;
 	vector<Point> *sign_contour;
 	SignInstance* detectedSign = NULL;
@@ -84,30 +85,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			// check which object it is
 			detectedSign = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
-
 			stateMachine.FeedSign(detectedSign);
 			//stateMachine.FeedDistanceSensor(distances);
 			//stateMachine.FeedAngle(angle);
 
-			// --------------------- PERFORM STATE MACHINE TICK ---------------------//
-			stateMachine.Tick();
-
-			// ----------------------------- SHOW OUTPUT ----------------------------//
-			
-			cout << "[ OUT ] CURRENT STATE: ";
-			switch (stateMachine.currentState) {
-				case IDLE: cout << "IDLE" << endl; break;
-				case WIGGLING: cout << "WIGGLING" << endl; break;
-				case APPROACHING_SIGN: cout << "APPROACHING_SIGN" << endl; break;
-				case EXECUTING_COMMAND: cout << "EXECUTING_COMMAND" << endl; break;
-			}
-			cout << "[ OUT ] Resulting linear speed: " << stateMachine.resultingLinear << endl;
-			cout << "[ OUT ] Resulting angular speed: " << stateMachine.resultingAngular << endl;
-
-#ifdef __linux__
-			// Assign computed speeds by the State Machine to the motors
-			motion.driveMotors(stateMachine.resultingLinear,stateMachine.resultingAngular);
-#endif
 
 			Point2f mass_center = detectedSign->centerOfMass;
 			focus = frame(sign_location);
@@ -144,6 +125,25 @@ int _tmain(int argc, _TCHAR* argv[])
 			cv::imshow("focus", focus);
 
 		}
+
+
+		// --------------------- PERFORM STATE MACHINE TICK ---------------------//
+		stateMachine.Tick();
+		// ----------------------------- SHOW OUTPUT ----------------------------//
+		cout << "[ OUT ] CURRENT STATE: ";
+		switch (stateMachine.currentState) {
+			case IDLE: cout << "IDLE" << endl; break;
+			case WIGGLING: cout << "WIGGLING" << endl; break;
+			case APPROACHING_SIGN: cout << "APPROACHING_SIGN" << endl; break;
+			case EXECUTING_COMMAND: cout << "EXECUTING_COMMAND" << endl; break;
+			case MARCHING_FORWARD: cout << "MARCHING_FORWARD" << endl; break;
+			case GAME_OVER: cout << "GAME_OVER" << endl; break;
+			default: cout << "Unknown state" << endl; break;
+		}
+		cout << "[ OUT ] Resulting linear speed: " << stateMachine.resultingLinear << endl;
+		cout << "[ OUT ] Resulting angular speed: " << stateMachine.resultingAngular << endl;
+
+
 		
 		// draw perceptive area
 		rectangle(frame, imageProcessor.perceptionArea, cv::Scalar(0, 255, 0));
