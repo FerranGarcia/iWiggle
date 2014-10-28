@@ -55,7 +55,7 @@ int _tmain(int argc, _TCHAR* argv[])
 #ifdef __linux__
 	Motion motion;
 
-	distSensor distSensor;
+	distSensor distSens1;
 #endif
 	Mat thresholded;
 	vector<Point> *sign_contour;
@@ -86,7 +86,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			detectedSign = imageProcessor.recognizeSign(&cropped_binary, sign_contour);
 
 			stateMachine.FeedSign(detectedSign);
-			//stateMachine.FeedDistanceSensor(distances);
+#ifdef __linux__
+			stateMachine.FeedDistanceSensor(distSens1.getDistance());
+#endif
 			//stateMachine.FeedAngle(angle);
 
 			// --------------------- PERFORM STATE MACHINE TICK ---------------------//
