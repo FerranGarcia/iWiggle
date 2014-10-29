@@ -124,14 +124,15 @@ void StateMachine::Tick() {
 
 			std::cout << "Current robot Heading: " << headingCurrent << std::endl;
 #ifdef __linux__
-			usleep(5000000);
+			usleep(3000000);
 #endif
 			std::cout << "//--------- Angle turn started --------//" << std::endl;
 			motion.turnAngle(angleToTurn, 5);
 			std::cout << "//--------- Angle turn completed ------//" << std::endl;
 #ifdef __linux__
-			usleep(5000000);
+			usleep(3000000);
 #endif
+			this->resultingAngular = 0;
 			this->currentState = MARCHING_FORWARD;
 			break;
 		}
