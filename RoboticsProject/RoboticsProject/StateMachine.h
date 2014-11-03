@@ -34,7 +34,7 @@ public:
 	~StateMachine();
 
 	void FeedSign(SignInstance *inputSign);
-	void FeedDistanceSensor(vector<double> distanceReadings);
+	void FeedDistanceSensor(unsigned int distanceReadings);
 	void FeedAngle(double currentAngle);
 
 	void Tick();

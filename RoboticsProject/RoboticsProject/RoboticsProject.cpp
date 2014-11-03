@@ -90,11 +90,19 @@ int _tmain(int argc, _TCHAR* argv[])
 			//stateMachine.FeedDistanceSensor(distSens1.getDistance());
 #endif
 			//stateMachine.FeedAngle(angle);
-
+			
 
 			Point2f mass_center = detectedSign->centerOfMass;
 			focus = frame(sign_location);
 			double arrow_angle = 0;
+
+
+
+			//Improvement of arrow angle detection by LineFitting
+			float angle = imageProcessor.getArrowAngleFitLine(sign_contour, sign_location, mass_center);
+			cout << "Angle: " << angle << endl;
+
+
 
 			// handle recognition ofdifferent object
 			cout << "---> DETECTED OBJECT: ";

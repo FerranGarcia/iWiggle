@@ -22,9 +22,9 @@ void StateMachine::FeedSign(SignInstance *inputSign) {
 	this->lastSeenSign = inputSign;
 
 }
-void StateMachine::FeedDistanceSensor(vector<double> distanceReadings) {
+void StateMachine::FeedDistanceSensor(unsigned int distanceReadings) {
 	// if we get close to the wall, start wiggling
-	if (distanceReadings[0] < WALL_DETECTION_DISTANCE) {
+	if (distanceReadings < WALL_DETECTION_DISTANCE) {
 		this->currentState = WIGGLING;
 	}
 }

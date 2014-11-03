@@ -163,6 +163,88 @@ double ImageProcessor::getArrowAngle(vector<Point> *contour, Mat *croppedImage) 
 	return angle;
 }
 
+float ImageProcessor::getArrowAngleFitLine(vector<Point> *contour, Rect sign_location, Point2f mass_center){
+
+	Vec4f newLine;
+	Vec3f data;
+	Point2f P0;		//point that lies on the line
+	Point2f P1;		//(center of rectangle) - P0
+	Point2f P2;		//(center of mass) - P0
+	Point2f rectangleProj;
+	Point2f massProj;
+
+	fitLine(*contour, newLine, CV_DIST_L2, 0, 0.01, 0.01);
+	float vx = newLine[0];
+	float vy = newLine[1];
+	float x = newLine[2];
+	float y = newLine[3];
+	int lefty = int((-x*vy / vx) + y);
+	int righty = int(((320 - x)*vy / vx) + y);
+	//std::cout << vx << " " << vy << " " << x << " " << y << " " << lefty << " " << righty << std::endl;
+	float angle = atan2((lefty - righty), 320);
+
+	angle = radian_to_degree(angle);
+
+	/*--------- PROJECTION OF RECTANGLE CENTER AND CENTER OF MASS INTO THE LINE ----------------
+	 * In order to project the two points we will use some linear algebra
+	 *
+	 *    v * v'
+	 *   ------- P1 + P0 = projected point
+	 *    v'* v
+	 *
+	 * where: - v is the vector that represents the line
+	 *        - P1 is the point we want to project shifted with respects one point of the line
+	 *		  - P0 is the point of the line were we take our 'imaginary' (0,0)
+	 *------------------------------------------------------------------------------------------*/
+
+	//we know that our line crosses data[1] (left Y) at x=0
+	P0.x = 0;
+	P0.y = -lefty;	//lefty
+
+	P1.x = (sign_location.x + sign_location.width / 2) - P0.x;		//shifting the (0,0) to a known point (P0) of the line
+	P1.y = -(sign_location.y + sign_location.height / 2) - P0.y;	//shifting the (0,0) to a known point (P0) of the line
+
+	P2.x = mass_center.x + sign_location.x - P0.x;					//shifting the (0,0) to a known point (P0) of the line
+	P2.y = -(mass_center.y + sign_location.y) - P0.y;				//shifting the (0,0) to a known point (P0) of the line
+
+	float vec1 = 319;					//vector which describes the line
+	float vec2 = -(righty - lefty);		//note that we need to change the sign since (0,0) is on the top-left corner. Y-axis is reversed
+
+	// v*v' gives a matrix as a result which is computed below
+	//float mat11 = pow(vec1, 2);
+	//float mat12 = vec1 * vec2;
+	float mat21 = vec1 * vec2;
+	float mat22 = pow(vec2, 2);
+
+	//v'*v is a scalar normalisation factor of the matrix
+	float normalisation = pow(vec1, 2) + pow(vec2, 2);
+
+	//mat11 = mat11 / normalisation;
+	//mat12 = mat12 / normalisation;
+	mat21 = mat21 / normalisation;
+	mat22 = mat22 / normalisation;
+
+	// Projection of the points undoind the shift previously done. Note that only Y is necessary to be corrected since P0.x = 0
+	//rectangleProj.x = mat11*P1.x + mat12*P1.y;
+	rectangleProj.y = -(mat21*P1.x + mat22*P1.y) - P0.y;
+
+	//massProj.x = mat11*P2.x + mat12*P2.y;
+	massProj.y = -(mat21*P2.x + mat22*P2.y) - P0.y;
+
+	//correction of the angle using the information of the projected points
+	if (angle < 0)
+	{
+		angle = angle + 180;
+	}
+	if (massProj.y > rectangleProj.y)
+	{
+		angle = angle + 180;
+	}
+
+	return angle;
+
+}
+
 
 
 
