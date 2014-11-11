@@ -18,25 +18,22 @@
 using namespace cv;
 using namespace std;
 
-#ifdef __linux__
+
 int main(int argc, char* argv[])
-#else
-int _tmain(int argc, _TCHAR* argv[])
-#endif
 {
 #ifdef __linux__
-		// Raspberry Pi Camera Test Code
-	raspicam::RaspiCam_Cv rpicam;
-	rpicam.set(CV_CAP_PROP_FRAME_WIDTH,160);
-	rpicam.set(CV_CAP_PROP_FRAME_HEIGHT,120);
-	//rpicam.set(CV_CAP_PROP_SATURATION, 100);
-	if (!rpicam.open()) {
+	//Open Raspberry Pi Camera
+	raspicam::RaspiCam_Cv cameraCap;
+	cameraCap.set(CV_CAP_PROP_FRAME_WIDTH,160);
+	cameraCap.set(CV_CAP_PROP_FRAME_HEIGHT,120);
+	if (!cameraCap.open()) {
 		cerr<<"Error opening the camera"<<endl;
 		return -1;
 	}
 #else
-	VideoCapture cap(0); // open the default camera
-	if (!cap.isOpened())  // check if we succeeded
+	//Open the default camera
+	VideoCapture cameraCap(0); 
+	if (!cameraCap.isOpened())  // check if we succeeded
 		return -1;
 #endif
 	
@@ -56,21 +53,18 @@ int _tmain(int argc, _TCHAR* argv[])
 	distSensor distSens1;
 #endif
 
-	
-
 	Mat thresholded;
 	vector<Point> *sign_contour;
 	SignInstance* detectedSign = NULL;
 
 	for (;;)
 	{
-		Mat frame;
-#ifdef __linux__
-		rpicam.grab();
-		rpicam.retrieve(frame);
-#else
-		cap >> frame; // get a new frame from camera
-#endif
+		Mat frame;	//image frame to be obtained from camera
+
+		//get a new frame from camera
+		cameraCap.grab();
+		cameraCap.retrieve(frame);
+
 		imageProcessor.getThresholdedImage(&frame, &thresholded);
 		sign_contour = imageProcessor.getLocationOfObject(&thresholded);
 		Mat focus(Size(128, 128), CV_8UC3);
@@ -229,10 +223,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 		}
 	}
-	// the camera will be deinitialized automatically in VideoCapture destructor
-#ifdef __linux__
-	rpicam.release();
-#endif
+	// in windows the camera will be deinitialized automatically in VideoCapture destructor
+	// in linux for raspicam, release method call is needed 
+	cameraCap.release();
 	return 0;
 }
 
