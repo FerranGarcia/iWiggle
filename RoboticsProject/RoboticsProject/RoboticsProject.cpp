@@ -92,12 +92,10 @@ int main(int argc, char* argv[])
 			Point2f mass_center = detectedSign->centerOfMass;
 			focus = frame(sign_location);
 			double arrow_angle = 0;
-
-
-
+			
 			//Improvement of arrow angle detection by LineFitting
-			float angle = imageProcessor.getArrowAngleFitLine(sign_contour, sign_location, mass_center);
-			cout << "Angle: " << angle << endl;
+			detectedSign->arrowAngle = imageProcessor.getArrowAngleFitLine(sign_contour, sign_location, mass_center);
+			cout << "Angle: " << detectedSign->arrowAngle << endl;
 
 
 

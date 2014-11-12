@@ -32,7 +32,7 @@ void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 	Mat channelV = channels[2];
 
 	Mat hue1, hue2, sat, val1, val2;
-	threshold(channelH, hue1, 10, 255, THRESH_BINARY_INV);
+	threshold(channelH, hue1, 0, 255, THRESH_BINARY_INV);
 	threshold(channelH, hue2, 170, 255, THRESH_BINARY);
 
 	threshold(channelS, sat, 40, 255, THRESH_BINARY);
@@ -163,7 +163,7 @@ double ImageProcessor::getArrowAngle(vector<Point> *contour, Mat *croppedImage) 
 	return angle;
 }
 
-float ImageProcessor::getArrowAngleFitLine(vector<Point> *contour, Rect sign_location, Point2f mass_center){
+double ImageProcessor::getArrowAngleFitLine(vector<Point> *contour, Rect sign_location, Point2f mass_center){
 
 	Vec4f newLine;
 	Vec3f data;

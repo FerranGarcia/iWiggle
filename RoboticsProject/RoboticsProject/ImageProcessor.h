@@ -22,7 +22,7 @@ public:
 	SignInstance* recognizeSign(Mat* croppedInput, vector<Point> *contour);
 
 	double getArrowAngle(vector<Point> *contour, Mat *croppedImage); 
-	float getArrowAngleFitLine(vector<Point> *contour, Rect sign_location, Point2f mass_center);
+	double getArrowAngleFitLine(vector<Point> *contour, Rect sign_location, Point2f mass_center);
 	Point2f getMassCenter(Mat *croppedImage);
 
 	cv::Rect perceptionArea, proximityArea;
