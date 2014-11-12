@@ -7,6 +7,7 @@
 #include "NNHelpers.h"
 #include "Motion.h"
 #include "distSensor.h"
+#include "Constants.h"
 
 #ifdef __linux__
 #include "opencv.hpp"
@@ -21,11 +22,13 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+	loadConstants("config2.xml");
+
 #ifdef __linux__
 	//Open Raspberry Pi Camera
 	raspicam::RaspiCam_Cv cameraCap;
-	cameraCap.set(CV_CAP_PROP_FRAME_WIDTH,160);
-	cameraCap.set(CV_CAP_PROP_FRAME_HEIGHT,120);
+	cameraCap.set(CV_CAP_PROP_FRAME_WIDTH,Constants::IMG_WIDTH);
+	cameraCap.set(CV_CAP_PROP_FRAME_HEIGHT,Constants::IMG_HEIGHT);
 	if (!cameraCap.open()) {
 		cerr<<"Error opening the camera"<<endl;
 		return -1;
@@ -47,7 +50,7 @@ int main(int argc, char* argv[])
 	imageProcessor.perceptionArea = cv::Rect(50, 50, 210, 110);
 	imageProcessor.proximityArea = cv::Rect(50, 160, 210, 70);
 
-	StateMachine stateMachine(cv::Size(320, 240));
+	StateMachine stateMachine(cv::Size(Constants::IMG_WIDTH, Constants::IMG_HEIGHT));
 
 #ifdef __linux__
 	distSensor distSens1;
@@ -67,7 +70,7 @@ int main(int argc, char* argv[])
 
 		imageProcessor.getThresholdedImage(&frame, &thresholded);
 		sign_contour = imageProcessor.getLocationOfObject(&thresholded);
-		Mat focus(Size(128, 128), CV_8UC3);
+		Mat focus(Size(Constants::FOC_WIDTH, Constants::FOC_HEIGHT), CV_8UC3);
 
 		if (sign_contour != NULL) { // object was found
 
@@ -125,7 +128,7 @@ int main(int argc, char* argv[])
 			line(focus, ptImageCenter, ptMassCenter, Scalar(0, 255, 0), 2);
 
 			// stabilize image of an object
-			resize(focus, focus, Size(128, 128));
+			resize(focus, focus, Size(Constants::FOC_WIDTH, Constants::FOC_HEIGHT));
 			cv::imshow("focus", focus);
 
 		}

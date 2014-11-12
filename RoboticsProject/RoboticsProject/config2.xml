@@ -1,0 +1,35 @@
+<?xml version = "1.0" ?>
+
+<config>
+	<int>
+		<IMG_WIDTH value = "160"></IMG_WIDTH> 
+		<IMG_HEIGHT value = "120"></IMG_HEIGHT>
+		<FOC_WIDTH value = "128"></FOC_WIDTH>
+		<FOC_HEIGHT value = "128"></FOC_HEIGHT>
+		
+		<THRESH_H_LOW value = "10"></THRESH_H_LOW>
+		<THRESH_H_HIGH value = "170"></THRESH_H_HIGH>
+		<THRESH_S_LOW value = "40"></THRESH_S_LOW>
+		<THRESH_V_LOW value = "40"></THRESH_V_LOW>
+		<THRESH_V_HIGH value = "230"></THRESH_V_HIGH>
+		<EROSION_SIZE value = "1"></EROSION_SIZE>
+		
+		<VEL_LINEAR value = "10"></VEL_LINEAR>
+		<VEL_ANGULAR value = "10"></VEL_ANGULAR>
+		<VEL_SCALE value = "2"></VEL_SCALE>			<!-- Velocity scale. -->
+		<ADDR_LCD value = "0x63"></ADDR_LCD>
+		<ADDR_DISTS value = "0x70"></ADDR_DISTS>
+		<ADDR_MOTION value = "0x58"></ADDR_MOTION>
+	</int>
+	
+	<float>
+		<AREA_RATIO value = "0.65"></AREA_RATIO>
+	</float>
+
+	<hex>
+		
+		
+	</hex>
+	
+	
+</config>
