@@ -78,6 +78,9 @@
     <ClInclude Include="FSHumanVoice.h">
       <Filter>Header Files\FeedbackMessageSets</Filter>
     </ClInclude>
+    <ClInclude Include="FSNoHumanVoice.h">
+      <Filter>Header Files\FeedbackMessageSets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -123,6 +126,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FSHumanVoice.cpp">
+      <Filter>Source Files\FeedbackMessageSets</Filter>
+    </ClCompile>
+    <ClCompile Include="FSNoHumanVoice.cpp">
       <Filter>Source Files\FeedbackMessageSets</Filter>
     </ClCompile>
   </ItemGroup>

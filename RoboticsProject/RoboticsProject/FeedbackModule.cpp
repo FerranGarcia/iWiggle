@@ -15,7 +15,7 @@ FeedbackModule::FeedbackModule(FeedbackMessageSetEnum messageSet)
 		break;
 
 	case FEEDBACK_NO_HUMAN_VOICE_PLAIN :
-
+		feedbackMessageSet = new FSHumanVoice();
 		break;
 
 	case FEEDBACK_FUNNY :

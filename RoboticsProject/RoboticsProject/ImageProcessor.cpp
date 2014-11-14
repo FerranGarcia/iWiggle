@@ -64,7 +64,7 @@ void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 
 void ImageProcessor::getThresholdedImageYCrCb(Mat *input, Mat* result) {
 
-	double threshConst = 0.65;
+	double threshConst = 0.6;
 	double erosion_size = 1;
 
 	//???No need to resize image since we resizing input from PiCam
@@ -90,8 +90,8 @@ void ImageProcessor::getThresholdedImageYCrCb(Mat *input, Mat* result) {
 		Point(erosion_size, erosion_size));
 
 	/// Apply the erosion operation
-	//erode(*result, *result, element);
-	//dilate(*result, *result, element);
+	erode(*result, *result, element);
+	dilate(*result, *result, element);
 
 	delete input_YCrCb;
 }

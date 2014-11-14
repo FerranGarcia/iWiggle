@@ -89,6 +89,7 @@
     <ClInclude Include="FSHumanVoice.h" />
     <ClInclude Include="FSInterface.h" />
     <ClInclude Include="EnumsHeader.h" />
+    <ClInclude Include="FSNoHumanVoice.h" />
     <ClInclude Include="ImageProcessor.h" />
     <ClInclude Include="Lcd.h" />
     <ClInclude Include="Motion.h" />
@@ -106,6 +107,7 @@
     <ClCompile Include="FSDebug.cpp" />
     <ClCompile Include="FSHumanVoice.cpp" />
     <ClCompile Include="FSInterface.cpp" />
+    <ClCompile Include="FSNoHumanVoice.cpp" />
     <ClCompile Include="ImageProcessor.cpp" />
     <ClCompile Include="Lcd.cpp" />
     <ClCompile Include="Motion.cpp" />
