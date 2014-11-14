@@ -29,7 +29,7 @@ Lcd::Lcd(void)
 #endif
 }
 
-void Lcd::sendText(char* text){
+void Lcd::sendText(const char* text){
 
 	// textString1 will be the top line of text, the leading space is sent to the LCD03
 	// because text must be sent to the command register (0), however if a non zero is recieved

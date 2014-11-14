@@ -31,7 +31,7 @@ public:
 	FILE *port;
 
 	Lcd(void);
-	void sendText(char*);
+	void sendText(const char*);
 	
 	~Lcd(void);
 };
