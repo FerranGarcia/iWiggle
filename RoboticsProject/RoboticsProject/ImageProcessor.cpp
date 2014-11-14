@@ -282,5 +282,28 @@ double ImageProcessor::getArrowAngleFitLine(vector<Point> *contour, Rect sign_lo
 }
 
 
+Mat ImageProcessor::getDefaultPerspectiveTransform()
+{
+	Point2f source_points[4], dest_points[4];
+	int IMG_WIDTH = 320;
+	int IMG_HEIGHT = 240;
 
+	//top points
+	source_points[0] = Point2f(0.0, 0.0);
+	source_points[1] = Point2f(IMG_WIDTH, 0.0);
+	//bottom points
+	source_points[2] = Point2f(IMG_WIDTH, IMG_HEIGHT);
+	source_points[3] = Point2f(0.0, IMG_HEIGHT);
+
+	//top points
+	dest_points[0] = Point2f(0.0, 0.0);
+	dest_points[1] = Point2f(IMG_WIDTH, 0.0);
+	//bottom points
+	dest_points[2] = Point2f(IMG_WIDTH - 0.0, IMG_HEIGHT);
+	dest_points[3] = Point2f(0, IMG_HEIGHT);
+
+	Mat transform_matrix;
+	transform_matrix = getPerspectiveTransform(source_points, dest_points);
+	return transform_matrix;
+}
 

@@ -28,5 +28,7 @@ public:
 	Point2f getMassCenter(Mat *croppedImage);
 
 	cv::Rect perceptionArea, proximityArea;
+
+	Mat getDefaultPerspectiveTransform();
 };
 

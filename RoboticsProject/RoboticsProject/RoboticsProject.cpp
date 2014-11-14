@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
 	imageProcessor.perceptionArea = cv::Rect(50, 50, 210, 110);
 	imageProcessor.proximityArea = cv::Rect(50, 160, 210, 70);
 
+	Mat perspective_transform_matrix = imageProcessor.getDefaultPerspectiveTransform();
 	StateMachine stateMachine(cv::Size(Constants::IMG_WIDTH, Constants::IMG_HEIGHT));
 
 #ifdef __linux__
@@ -68,9 +69,14 @@ int main(int argc, char* argv[])
 		//get a new frame from camera
 		cameraCap.grab();
 		cameraCap.retrieve(frame);
+		// apply perspective transform
+		// after tuning it can be applied directly on thresholded matrix
+
+		warpPerspective(frame, frame, perspective_transform_matrix, frame.size());
 
 		imageProcessor.getThresholdedImage(&frame, &thresholded);
 		imageProcessor.getThresholdedImageYCrCb(&frame, &thresholdedCr);
+
 
 		sign_contour = imageProcessor.getLocationOfObject(&thresholded);
 		Mat focus(Size(Constants::FOC_WIDTH, Constants::FOC_HEIGHT), CV_8UC3);
