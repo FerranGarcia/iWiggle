@@ -17,6 +17,8 @@ public:
 	~ImageProcessor();
 
 	void getThresholdedImage(Mat *input, Mat* output);
+	void getThresholdedImageYCrCb(Mat *input, Mat* output);
+
 	vector<Point>* getLocationOfObject(Mat *binaryInput); // returns null if no object is found
 
 	SignInstance* recognizeSign(Mat* croppedInput, vector<Point> *contour);

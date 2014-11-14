@@ -14,7 +14,9 @@ ImageProcessor::~ImageProcessor()
 void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 	
 	//???No need to resize image since we resizing input from PiCam
-	resize(*input, *input, Size(320, 240));
+	if ((*input).cols > 320){
+		resize(*input, *input, Size(320, 240));
+	}
 
 	GaussianBlur(*input, *input, Size(1, 1), 1.0);
 
@@ -32,7 +34,7 @@ void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 	Mat channelV = channels[2];
 
 	Mat hue1, hue2, sat, val1, val2;
-	threshold(channelH, hue1, 0, 255, THRESH_BINARY_INV);
+	threshold(channelH, hue1, 10, 255, THRESH_BINARY_INV);
 	threshold(channelH, hue2, 170, 255, THRESH_BINARY);
 
 	threshold(channelS, sat, 40, 255, THRESH_BINARY);
@@ -58,6 +60,40 @@ void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 
 	delete input_hsv;
 
+}
+
+void ImageProcessor::getThresholdedImageYCrCb(Mat *input, Mat* result) {
+
+	double threshConst = 0.65;
+	double erosion_size = 1;
+
+	//???No need to resize image since we resizing input from PiCam
+	if ( (*input).cols > 320){
+		resize(*input, *input, Size(320, 240));
+	}
+	
+	Mat *input_YCrCb = new Mat();
+
+	//convert BGR image to YCrCb for segmentation
+	cvtColor(*input, *input_YCrCb, CV_BGR2YCrCb);
+
+	// Splitting.
+	vector<Mat> channels;
+	split(*input_YCrCb, channels); //channels[1] = channelCr
+	
+	// Thresholding
+	*result = channels[1] > 255 * threshConst;
+
+	// Structuring element for closing
+	Mat element = getStructuringElement(MORPH_ELLIPSE,
+		Size(2 * erosion_size + 1, 2 * erosion_size + 1),
+		Point(erosion_size, erosion_size));
+
+	/// Apply the erosion operation
+	//erode(*result, *result, element);
+	//dilate(*result, *result, element);
+
+	delete input_YCrCb;
 }
 
 vector<Point>* ImageProcessor::getLocationOfObject(Mat *binaryInput) {
