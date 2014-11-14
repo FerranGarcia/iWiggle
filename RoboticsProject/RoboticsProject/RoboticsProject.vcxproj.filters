@@ -19,6 +19,12 @@
     <Filter Include="Header Files\FeedbackMessageSets">
       <UniqueIdentifier>{280b1393-0077-43dd-ab15-862ed232a82d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sounds">
+      <UniqueIdentifier>{85ab2fef-24a4-4c1e-84b0-3d693f0f1368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sounds\no_human_voice">
+      <UniqueIdentifier>{d9225fb1-289a-42ca-bb56-7aa16ffddd79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -69,6 +75,9 @@
     <ClInclude Include="EnumsHeader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FSHumanVoice.h">
+      <Filter>Header Files\FeedbackMessageSets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -113,8 +122,31 @@
     <ClCompile Include="FeedbackModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FSHumanVoice.cpp">
+      <Filter>Source Files\FeedbackMessageSets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="sounds\no_human_voice\detection.wav">
+      <Filter>sounds\no_human_voice</Filter>
+    </Media>
+    <Media Include="sounds\no_human_voice\executing.mp3">
+      <Filter>sounds\no_human_voice</Filter>
+    </Media>
+    <Media Include="sounds\no_human_voice\forward.wav">
+      <Filter>sounds\no_human_voice</Filter>
+    </Media>
+    <Media Include="sounds\no_human_voice\game_over.mp3">
+      <Filter>sounds\no_human_voice</Filter>
+    </Media>
+    <Media Include="sounds\no_human_voice\idle.wav">
+      <Filter>sounds\no_human_voice</Filter>
+    </Media>
+    <Media Include="sounds\no_human_voice\wiggling.wav">
+      <Filter>sounds\no_human_voice</Filter>
+    </Media>
   </ItemGroup>
 </Project>

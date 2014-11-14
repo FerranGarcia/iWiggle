@@ -41,6 +41,8 @@ void Lcd::sendText(const char* text){
 		printf("Error writing to i2c slave\n");
 		exit(1);
 	}
+#else 
+	cout << "SENDING THIS TO LCD: " << text << endl;
 #endif
 }
 

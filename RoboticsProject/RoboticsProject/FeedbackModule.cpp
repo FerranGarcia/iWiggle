@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "FeedbackModule.h"
 #include "FSDebug.h"
+#include "FSHumanVoice.h"
 
 FeedbackModule::FeedbackModule(FeedbackMessageSetEnum messageSet)
 {
@@ -10,7 +11,7 @@ FeedbackModule::FeedbackModule(FeedbackMessageSetEnum messageSet)
 		break;
 
 	case FEEDBACK_HUMAN_VOICE_PLAIN :
-
+		feedbackMessageSet = new FSHumanVoice();
 		break;
 
 	case FEEDBACK_NO_HUMAN_VOICE_PLAIN :

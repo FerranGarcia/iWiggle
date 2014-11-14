@@ -10,7 +10,7 @@ StateMachine::StateMachine(cv::Size cameraImageSize)
 	motion = Motion();
 
 	// instantiate message set for the feedback
-	feedbackModule = new FeedbackModule(FEEDBACK_DEBUG_MSGS);
+	feedbackModule = new FeedbackModule(FEEDBACK_NO_HUMAN_VOICE_PLAIN);
 }
 
 StateMachine::~StateMachine()
