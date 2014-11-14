@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "StateMachine.h"
 
-
-
 StateMachine::StateMachine(cv::Size cameraImageSize)
 {
 	this->currentState = WIGGLING;
@@ -10,6 +8,9 @@ StateMachine::StateMachine(cv::Size cameraImageSize)
 	// save image size for control of the angular speed
 	this->cameraImageSize = cameraImageSize;
 	motion = Motion();
+
+	// instantiate message set for the feedback
+	feedbackModule = new FeedbackModule(FEEDBACK_NO_HUMAN_VOICE_PLAIN);
 }
 
 StateMachine::~StateMachine()
@@ -55,6 +56,9 @@ void StateMachine::Tick() {
 
 		// state exit condition
 		if (this->lastSeenSign == NULL) {
+			// broadcast notifications
+			feedbackModule->BroadcastInfo(currentState, IDLE);
+
 			currentState = MARCHING_FORWARD;
 		}
 
@@ -69,6 +73,9 @@ void StateMachine::Tick() {
 		// STATE SWITCH CONDITION
 		// if last seen sign is reliable, start approaching it
 		if (lastSeenSign != NULL && lastSeenSign->signArea == SIGN_AREA_DETECTION) {
+			// broadcast notifications
+			feedbackModule->BroadcastInfo(currentState, APPROACHING_SIGN);
+
 			this->currentState = APPROACHING_SIGN;
 		}
 
@@ -90,6 +97,10 @@ void StateMachine::Tick() {
 		if (lastSeenSign != NULL && lastSeenSign->signArea == SIGN_AREA_CLOSE) {
 			// allocate memory for the new sign, since this->lastSign gets deleted after 3 seconds
 			this->targetSign = new SignInstance(lastSeenSign);
+
+			// broadcast notifications
+			feedbackModule->BroadcastInfo(currentState, EXECUTING_COMMAND);
+
 			// start executing the command
 			this->currentState = EXECUTING_COMMAND;
 		}
@@ -104,17 +115,24 @@ void StateMachine::Tick() {
 #ifdef __linux__
 			usleep(5000000); // wait 5 seconds for the next function call
 #endif
+			// broadcast notifications
+			feedbackModule->BroadcastInfo(currentState, MARCHING_FORWARD);
+
 			this->currentState = MARCHING_FORWARD;
 			break;
 
 		case WAYPOINT :
 
 			std::cout << "//--------- GOAL REACHED! ----------//" << std::endl;
+
+			// broadcast notifications
+			feedbackModule->BroadcastInfo(currentState, GAME_OVER);
+
 			this->currentState = GAME_OVER;
 			break;
 
 		case ARROW :
-
+			
 			double angleToTurn = this->lastSeenSign->arrowAngle - 90;
 			angleToTurn = motion.constrainAngle(angleToTurn);
 			std::cout << "//-------Angle to turn: " << angleToTurn << std::endl;
@@ -132,6 +150,10 @@ void StateMachine::Tick() {
 #ifdef __linux__
 			usleep(3000000);
 #endif
+
+			// broadcast notifications
+			feedbackModule->BroadcastInfo(currentState, MARCHING_FORWARD);
+
 			this->resultingAngular = 0;
 			this->currentState = MARCHING_FORWARD;
 			break;
@@ -146,6 +168,9 @@ void StateMachine::Tick() {
 
 		// check exit conditions
 		if (lastSeenSign != NULL && lastSeenSign->signArea == SIGN_AREA_DETECTION) {
+			// broadcast notifications
+			feedbackModule->BroadcastInfo(currentState, APPROACHING_SIGN);
+
 			this->currentState = APPROACHING_SIGN;
 		}
 

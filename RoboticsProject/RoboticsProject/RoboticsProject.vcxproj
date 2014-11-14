@@ -84,6 +84,11 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="distSensor.h" />
+    <ClInclude Include="FeedbackModule.h" />
+    <ClInclude Include="FSDebug.h" />
+    <ClInclude Include="FSHumanVoice.h" />
+    <ClInclude Include="FSInterface.h" />
+    <ClInclude Include="EnumsHeader.h" />
     <ClInclude Include="ImageProcessor.h" />
     <ClInclude Include="Lcd.h" />
     <ClInclude Include="Motion.h" />
@@ -97,6 +102,10 @@
   <ItemGroup>
     <ClCompile Include="Constants.cpp" />
     <ClCompile Include="distSensor.cpp" />
+    <ClCompile Include="FeedbackModule.cpp" />
+    <ClCompile Include="FSDebug.cpp" />
+    <ClCompile Include="FSHumanVoice.cpp" />
+    <ClCompile Include="FSInterface.cpp" />
     <ClCompile Include="ImageProcessor.cpp" />
     <ClCompile Include="Lcd.cpp" />
     <ClCompile Include="Motion.cpp" />
@@ -112,6 +121,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="sounds\no_human_voice\detection.wav" />
+    <Media Include="sounds\no_human_voice\executing.mp3" />
+    <Media Include="sounds\no_human_voice\forward.wav" />
+    <Media Include="sounds\no_human_voice\game_over.mp3" />
+    <Media Include="sounds\no_human_voice\idle.wav" />
+    <Media Include="sounds\no_human_voice\wiggling.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
