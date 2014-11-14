@@ -77,6 +77,9 @@ Makefile*
 [Rr]elease/
 [Rr]eleases/
 
+# some packages foldes
+*/[p]ackages/sfml-*
+
 # Visual C++ cache files
 *.tlog
 ipch/
