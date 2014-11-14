@@ -57,6 +57,7 @@ int main(int argc, char* argv[])
 #endif
 
 	Mat thresholded;
+	Mat thresholdedCr;
 	vector<Point> *sign_contour;
 	SignInstance* detectedSign = NULL;
 
@@ -69,6 +70,8 @@ int main(int argc, char* argv[])
 		cameraCap.retrieve(frame);
 
 		imageProcessor.getThresholdedImage(&frame, &thresholded);
+		imageProcessor.getThresholdedImageYCrCb(&frame, &thresholdedCr);
+
 		sign_contour = imageProcessor.getLocationOfObject(&thresholded);
 		Mat focus(Size(Constants::FOC_WIDTH, Constants::FOC_HEIGHT), CV_8UC3);
 
@@ -155,6 +158,7 @@ int main(int argc, char* argv[])
 		// draw proximity area
 		rectangle(frame, imageProcessor.proximityArea, cv::Scalar(0, 0, 255));
 		cv::imshow("thresholded", thresholded);
+		cv::imshow("thresholded Cr", thresholdedCr);
 		cv::imshow("original", frame);
 
 		char key_code;
