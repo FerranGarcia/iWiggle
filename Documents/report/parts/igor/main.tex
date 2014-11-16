@@ -1,0 +1,77 @@
+\documentclass[11pt]{article}
+
+\usepackage[backend=bibtex]{biblatex}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{anysize}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{algorithm2e}
+\usepackage{pgfplots}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\bibliography{bibliography.bib}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mypurple}{rgb}{0.58,0,0.82}
+
+\usepackage{listings}
+
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox[c]{\textwidth}{#1#2#3}}}
+
+\setlength\parindent{0pt}
+\setlength{\parskip}{10pt}
+
+\marginsize{2cm}{2cm}{1cm}{1cm}
+
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+\begin{document}
+
+%  Title and authors
+   \begin{center}
+     {\huge\bfseries B31XP Robotics project\\ Robotic object follower}\\
+      \vspace{2ex}
+      \textsc{Andrey Pak, Donatas Kozlovskis, Enric Cornellà,\\ Fernando Garcia,  Igor Peric}
+   \end{center}
+   \vspace{2ex}%
+
+%  Abstract
+\begin{abstract}
+This project presents a small, easy to build low-cost robot system, that is able to find coloured signs on the floor and implement the associated actions, e.g. stop, turn, pause, etc.
+The robot hardware uses Raspberry Pi to control a set of motors, sensors and servo actuators. 
+Report provides information about done review the hardware design and implementation of software using open source tools as C++ and OpenCV libraries. 
+\end{abstract}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Software}
+
+\input{software-intro.tex}
+
+\section{State machine}
+
+\input{state-machine.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Vision module}
+
+\input{vision-module.tex}
+
+\section{Further improvements}
+
+\input{further-improvements.tex}
+
+\clearpage
+
+
+\end{document}
