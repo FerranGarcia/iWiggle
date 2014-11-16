@@ -6,7 +6,7 @@
 \usepackage{amssymb}
 \usepackage{anysize}
 \usepackage{graphicx}
-\graphicspath{ {./images/} }
+\graphicspath{ {./images/}, {./parts/igor/} }
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{algorithm2e}
@@ -56,6 +56,7 @@ Report provides information about done review the hardware design and implementa
 \end{abstract}
 
 \section{Introduction}
+\label{sec:intro}
 
 \input{parts/section_introduction.tex}
 
@@ -76,6 +77,13 @@ Report provides information about done review the hardware design and implementa
 	\input{parts/subsection_hardware.tex}
 	
 \subsection{Software}
+
+\input{parts/igor/software-intro.tex}
+
+\subsubsection{State machine}
+
+\input{parts/igor/state-machine.tex}
+
 \subsubsection{Actuators and sensing drivers}
 \input{parts/actuators_and_senging_drivers.tex}
 \subsubsection{Motion module}
@@ -211,6 +219,12 @@ Manipulating mentioned registers, 3 main encoder controlling functions were impl
 
 \clearpage
 \clearpage
+
+
+\subsection{Vision module}
+
+\input{parts/igor/vision-module.tex}
+
 \section{ Final setup }
 \input{parts/final_setup}
 
@@ -221,6 +235,7 @@ Manipulating mentioned registers, 3 main encoder controlling functions were impl
 
 \section{Further improvements}
 
+\input{parts/igor/further-improvements.tex}
 
 \clearpage
 
