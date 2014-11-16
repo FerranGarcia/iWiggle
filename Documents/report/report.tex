@@ -1,4 +1,4 @@
-\documentclass[10pt,twocolumn]{article}
+\documentclass[11pt]{article}
 
 \usepackage[backend=bibtex]{biblatex}
 \usepackage[utf8]{inputenc}
@@ -12,7 +12,11 @@
 \usepackage{algorithm2e}
 \usepackage{pgfplots}
 \usepackage{hyperref}
+\usepackage{booktabs}
 \bibliography{bibliography.bib}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -34,7 +38,6 @@
 
 \begin{document}
 
-\twocolumn[%
 %  Title and authors
    \begin{center}
      {\huge\bfseries B31XP Robotics project\\ Robotic object follower}\\
@@ -42,21 +45,197 @@
       \textsc{Andrey Pak, Donatas Kozlovskis, Enric Cornellà,\\ Fernando Garcia,  Igor Peric}
    \end{center}
    \vspace{2ex}%
-]
+
 %  Abstract
 \begin{abstract}
-This project presents a small demonstration robot system, that is able to read coloured markers on the floor and implement the associated actions, e.g. stop, turn, pause, etc.
-A first design of the robot hardware uses Raspberry Pi to control a set of
-motors, sensors and servo actuators. The project goal was to review the hardware design,
-add a Raspberry Pi camera and implement the software in C++ and OpenCV, where despite of computational constraints, the image processing must be efficient and fast.
+This project presents a small, easy to build low-cost robot system, that is able to find coloured signs on the floor and implement the associated actions, e.g. stop, turn, pause, etc.
+The robot hardware uses Raspberry Pi to control a set of motors, sensors and servo actuators. 
+Report provides information about done review the hardware design and implementation of software using open source tools as C++ and OpenCV libraries. 
 \end{abstract}
 
 \section{Introduction}
 
+
+Nowadays automation and robotics are leaving the traditional sectors as industrial manufacturing and becoming a part of daily life. It is integrating into our society, while many members still does not have a knowledge of it, since they are only familiar with the form of automation learned form massive social media.
+Because of this trend of automation, it is important that educational organizations start preparing not only robotic researchers and designers, but also industrial personnel who will be able
+to take care of the robotic devices existing in our daily environment. 
+
+A broad variety of robotic courses offered by universities or by massive open online education systems, increased during the past several years. However young students still lack opportunities to get hands-on experience on the understanding working principles, fabrication and implementation of robotic devices, which leads to the gab between theoretical and practical domain knowledge.
+
+This project covered developing a low-cost wheeled robot, where initial hardware design was provided by project supervisor, with limitations of only having motor servos, distance sensor, camera and Raspberry Pi single-board computer which is intended to promoting the teaching of basic computer science in schools \footnote{\url{http://www.raspberrypi.org/picademy/}}.
+Constraint of  Raspberry Pi computation power raised challenge to find an  optimal techniques of implementing controllers of sensors and actuators, knowing that the most of resources are consumed by image processing to implement and realise desired robot actions. Here, the optimal software design procedure is presented leading to the working example of constructed robot.
+
+
+\section{Project Management}
+
+In order to have a continuous progress, project management had to be established. The goal of it is to ensure that the whole project and software development process works as it is intended, allowing project activities to meet project requirements.
+\\
+The main steps of project management process are initiating, planning, executing, monitoring and controlling, and closing. Thus firstly, project team meetings were established on a weekly basis. Continuing defining the project goals, tight control of timeline had to be set as well, in order to keep track of deadlines.
+\\
+For this purpose the Gantt charts web tool\footnote{\url{https://teamgantt.com/}} was employed. It allowed to breakdown work structure of the project to small tasks, setting the start and finish dates individually. Example of Gantt chart used in this project can be seen in figure \ref{fig:gannt_example}.
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=1\textwidth]{gantt_chart_part}
+	\caption{Part of planning represented on Gantt chart}
+	\label{fig:gannt_example}
+\end{figure}
+
+Beside the track of the tasks, version control system for tracking the code changes had to be chosen. Common tools are Team Foundation Version Control, Mercurial or Git source control. Due to affordability and compatibility, distributed version control system Git was chosen. 
+\\
+For hosting the central GIT repository the two main players are \textit{Github} and \textit{Bitbucket}.
+The main difference between the two is being cost for non-open source projects. \textit{Bitbucket} is free for teams up to 5 users and can host private closed source repositories whereas \textit{Github} does not provide private repositories for free. Thus the specifications of providers led to choose \textit{Bitbucket} for being web-based hosting service for this project.
+\\
+After setting up source version control, actual developing had started. In order to keep track with the Gantt chart, specific issues were created and assigned to each team member on a weekly basis. Project management tool \textit{Bitbucket Cards}, a part of \textit{Bitbucket}, offered interaction with issues on one easy-to-use, intuitive dashboard, where progress of tasks from one list to the next was easy to track.  Example of early stage project board can be seen in figure \ref{fig:bitcards}.
+
+	\begin{figure}[ht!]
+		\centering
+		\includegraphics[width=0.7\textwidth]{bitbucket_cards}
+		\caption{Early stage project board}
+		\label{fig:bitcards}
+	\end{figure}
+	
+
+\clearpage
+\section{Motion module}
+
+This module had to realise control of robot wheels. Since designed robot uses
+Dual 12Volt 2.8Amp H Bridge Motor Drive MD25 \footnote{\url{http://www.robot-electronics.co.uk/htm/md25i2c.htm}}, controlling the board is done using I2C bus system mode.
+Generally this module had to realize following actions:
+\begin{itemize}
+	\item drive motors by setting individual speeds for both wheels;
+	\item get heading of the robot by reading encoder values.
+\end{itemize}
+Thus these requirements led to splitting the whole module into two blocks:  one being responsible for driving motors and another for reading/writing encoders.
+
+\begin{figure}[!ht]
+	\centering
+	\begin{tikzpicture}[node distance = 2cm, auto]
+	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+	text width=5em, text centered, rounded corners, minimum height=4em]
+	\tikzstyle{line} = [draw, -latex']
+	% Place nodes
+	\node [block] (navigator) {Motion navigator};
+	\node [block, below of=navigator, xshift=-1.5cm] (motors) {Motors};
+	\node [block, below of=navigator, xshift= 1.5cm] (encoders) {Encoders};
+	% Draw edges
+	\path [line] (navigator) -| (motors);
+	\path [line] (navigator) -| (encoders);
+	\end{tikzpicture}
+	\caption{Motion module structure}
+	\label{fig:motion_structure}
+\end{figure}
+
+\subsection{Controlling motors}
+
+All communication between high level functions and motors is done via  I2C bus command register.
+The MD25 has 17 registers numbered 0 to 16 as follows:
+\begin{table}[h]
+	\begin{tabular}{@{}llll@{}}
+		\toprule
+		\textbf{Register} & \textbf{Name}     & \textbf{Read/Write} & \textbf{Description}                                             \\ \midrule
+		0                 & Speed1            & R/W                 & Motor1 speed (mode 0,1) or speed (mode 2,3)                      \\
+		1                 & Speed2/Turn       & R/W                 & Motor2 speed (mode 0,1) or turn (mode 2,3)                       \\
+		2                 & Enc1a             & Read only           & Encoder 1 position, 1st byte (highest),   \\
+		3                 & Enc1b             & Read only           & Encoder 1 position, 2nd byte                                     \\
+		4                 & Enc1c             & Read only           & Encoder 1 position, 3rd byte                                     \\
+		5                 & Enc1d             & Read only           & Encoder 1 position, 4th (lowest byte)                            \\
+		6                 & Enc2a             & Read only           & Encoder 2 position, 1st  byte (highest),  \\
+		7                 & Enc2b             & Read only           & Encoder 2 position, 2nd byte                                     \\
+		8                 & Enc2c             & Read only           & Encoder 2 position, 3rd byte                                     \\
+		9                 & Enc2d             & Read only           & Encoder 2 position, 4th byte (lowest byte)                       \\
+		10                & Battery volts     & Read only           & The supply battery voltage                                       \\
+		11                & Motor 1 current   & Read only           & The current through motor 1                                      \\
+		12                & Motor 2 current   & Read only           & The current through motor 2                                      \\
+		13                & Software Revision & Read only           & Software Revision Number                                         \\
+		14                & Acceleration rate & R/W                 & Optional Acceleration register                                   \\
+		15                & Mode              & R/W                 & Mode of operation (see below)                                    \\
+		16                & Command           & Write only          & Used for reset of encoder counts and module address changes      \\ \bottomrule
+	\end{tabular}
+	\caption{The MD25 register}
+\end{table}
+
+For controlling the motors, registers 0, 1 and 15 are used. Firstly, when initializing motor control, mode register (15) is modified.
+The mode register selects which mode of operation and I2C data input type the user requires. Here the type 3 was chosen and writing this value 
+to the mode register makes enables turn mode: speed1 controls both motors \textit{speed}, and speed2 becomes the \textit{turn} value. 
+Data is in the range of -128 for full reverse, 0 for stop and 127 for full forward speed of motors.
+
+It is worth to mention, that turn mode looks at the speed register to decide if the direction is forward or reverse. Then it applies a subtraction or addition of the turn value on either motor. If the direction is forward
+\begin{table}[!ht]
+	\centering
+	\begin{tabular}{lcl}
+		motor speed1 & = & speed - turn;\\
+		motor speed2 & = & speed + turn;
+	\end{tabular}
+\end{table}
+
+else the direction is reverse 
+\begin{table}[!ht]
+	\centering
+	\begin{tabular}{lcl}
+		motor speed1 & = & speed + turn;\\
+		motor speed2 & = & speed - turn.
+	\end{tabular}
+\end{table}
+
+Manipulating mentioned registers, 4 main motor controlling functions were implemented as seen in figure \ref{fig:motor_structure}.
+\begin{figure}[!ht]
+	\centering
+	\begin{tikzpicture}[node distance = 2cm, auto]
+	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+	text width=5em, text centered, rounded corners, minimum height=4em]
+	\tikzstyle{line} = [draw, -latex']
+	% Place nodes
+	\node [block] (motors) {Motors};
+	\node [block, below of=navigator, xshift=-1.5cm] (stop) {Stop Motors};
+	\node [block, left of=stop, node distance = 3 cm] (drive) {Drive Motors};
+	\node [block, below of=navigator, xshift=1.5cm] (left) {Turn left};
+	\node [block, right of=left,  node distance = 3 cm] (right) {Turn right};
+	% Draw edges
+	\path [line] (motors) -| (drive);
+	\path [line] (motors) -| (stop);
+	\path [line] (motors) -| (left);
+	\path [line] (motors) -| (right);
+	\end{tikzpicture}
+	\caption{Motor controlling functions}
+	\label{fig:motor_structure}
+\end{figure}
+
+\subsection{Controlling encoders}
+
+For controlling the encoders, registers 2-9 and 16 are used.
+Manipulating mentioned registers, 3 main encoder controlling functions were implemented, which are presented figure \ref{fig:encoder_structure}.
+\begin{figure}[!ht]
+	\centering
+	\begin{tikzpicture}[node distance = 2cm, auto]
+	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+	text width=5em, text centered, rounded corners, minimum height=4em]
+	\tikzstyle{line} = [draw, -latex']
+	% Place nodes
+	\node [block] (encoders) {Encoders};
+	\node [block, below of=navigator, xshift=-1.5cm] 	(rleft) {Read right encoder};
+	\node [block, left of=stop, node distance = 3 cm] 	(lleft) {Read left encoder};
+	\node [block, below of=navigator, xshift=1.5cm] 	(reset) {Reset both encoders};
+	\node [block, right of=left,  node distance = 3 cm] (angle) {Get robot heading};
+	% Draw edges
+	\path [line] (encoders) -| (rleft);
+	\path [line] (encoders) -| (lleft);
+	\path [line] (encoders) -| (reset);
+	\path [line] (encoders) -| (angle);
+	\end{tikzpicture}
+	\caption{Motor controlling functions}
+	\label{fig:encoder_structure}
+\end{figure}
+
+
+\clearpage
+\clearpage
+\section{Hardware}
 \textbf{Sign uses}:\\
 Arrow – direction to go\\
 Stop – sign for pause\\
 Circle – goal \\
+
 
 At the beginning robot should rotate in a place around itself.
 At the time the sign is dropped in robot field of view (defined by camera position, limitations and user setup), sign should be detected, and robot should approach until the sign to be close enough to save and evaluate recognized action.
@@ -67,7 +246,6 @@ Wiggle movement
 Speaker, sound feedback
 When circle is detected, tilt camera, or go to front to find the QR code.
 
-\section{Hardware}
 
 \section{Working principle}
 
@@ -78,7 +256,6 @@ When circle is detected, tilt camera, or go to front to find the QR code.
 
 
 \subsection{Graphical User Interface}
-
 
 
 
