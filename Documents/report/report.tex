@@ -13,6 +13,8 @@
 \usepackage{pgfplots}
 \usepackage{hyperref}
 \usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
 \bibliography{bibliography.bib}
 
 \usepackage{tikz}
@@ -58,6 +60,8 @@ Report provides information about done review the hardware design and implementa
 \input{parts/section_introduction.tex}
 
 \section{Description of the Project}
+\input{parts/section_description.tex}
+
 
 \section{State of the art}
 
@@ -69,6 +73,8 @@ Report provides information about done review the hardware design and implementa
 \clearpage
 \subsection{Overview}
 \subsection{Hardware}
+	\input{parts/subsection_hardware.tex}
+	
 \subsection{Software}
 \subsubsection{Actuators and sensing drivers}
 \input{parts/actuators_and_senging_drivers.tex}
@@ -211,6 +217,7 @@ Manipulating mentioned registers, 3 main encoder controlling functions were impl
 \section{Problems encountered}
 
 
+\input{parts/section_issues}
 
 \section{Further improvements}
 
