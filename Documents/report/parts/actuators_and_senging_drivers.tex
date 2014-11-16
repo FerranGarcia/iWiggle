@@ -1,0 +1,17 @@
+Most of the processes the robot is doing need either to get some information from external sensors or to send data to the actuators or displays. Whenever this happens the robot needs to be able to communicate with external gadgets using drivers.
+
+In this part the sound, lcd and proximity sensor will be explained.
+
+The first one is built directly on RaspberryPi. Since the platform has already an output of 3.5mm there is no need to communicate with any other. However it is considered as an external gadget because a speaker is needed. \textit{Explanation of libraries used for doing this.}
+
+The second and the third (lcd and proximity) have a little microprocessor in them. This forces the robot to use a communication protocol in order to exchange information with them.
+
+LCD display is used in order to show information about the current state of the robot. Is a very powerful way to know what the robot is thinking or doing without the need of connecting a screen to the raspberryPi. This is very important since the less computational power expended on the RP the better. Avoiding the initialization of a graphical user interface will result in a slightly more fast execution of the program, which is desired.
+
+Proximity sensor will give information to the robot about its surroundings. The working principle is based on ultrasonic sounds that rebound on objects. By calculating the amount of time for a sound wave to get back to the sensor it is possible to estimate the distance.
+
+The two last gadgets use both the $i^{2}c$ protocol in order to communicate with the raspberryPi. $I^{2}c$... blablabla Drivers extracted from robo-electronics.
+
+HOW TO WRITE RASPBERRY PI
+
+WHO IS EXPLAINING THE I2C DEEPLY?
