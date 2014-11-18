@@ -18,6 +18,16 @@ located in front of the robot provides additional support. The frame consists of
 metal profiles with a perforated plate that serves as a base for mounting
 electronic components.
 
+EMG30 is a module that incorporates motor, gearbox and encoder with Hall sensor
+and suited for medium robotics applications. The gearbox provides increased
+torque allowing robust movement in different environments while the Hall sensor
+obtains information about the rotation of the shaft. (Include a reference to
+the EMG30).
+
+
+
+ 
+
 \subsection*{Electronics}
 
 The main electronic component of the robot is the Raspberry Pi single-board
@@ -60,6 +70,27 @@ increase the reliability and robustness of NoIR camera, a couple of IR LEDs were
 installed to provide additional illumination.
 
 Talk about sign design for the near-IR camera here.
+After a series of experiments, a highly-reflective duct tape was chosen as a
+material for the signs. It showed high reflectance under poor lighting
+conditions. The usage of the NoIR camera accompanied with a couple of IR LEDs
+showed high segmentation performance with minimum lighting provided.
+
+MD25 is a dual H-Bridge I2C / Serial motor driver suited for the control of
+EMG30 modules.
+It provides additional capabilities in the motor manipulation, such as variable
+acceleration, motor current information and independent control of two motors
+with encoder feedback. It is also equipped with a 5V regulator, however it is
+impossible to power the Raspberry Pi as the continuous supply rate is 300 mA,
+while the average consumption of Raspberry Pi is 700 mA.
+
+Put the reference.
+\url{http://www.pishrobot.com/files/products/datasheets/md25.pdf}
+
+Due to the reason explained before, Raspberry Pi is powered using Taco Power TSR
+1-2450 DC-DC voltage step-down modules that provide 5V 1A output.
+
+Put the reference.
+\url{http://www.adafruit.com/datasheets/tsr1.pdf}
 
 % Fix table here
 \begin{table}[h!]
@@ -86,6 +117,7 @@ order to port the code to another platform, the camera change as well as some
 code modification are required.
 
 The robot is also equipped with an ultrasound proximity sensor used for obstacle
-detection.
+detection. It is a basic proximity sensor with a focus of 15 degrees and an
+accuracy about 2mm. 
 
 An I2C LCD Screen module provides an interface for visual feedback.
