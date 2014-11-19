@@ -1,0 +1,15 @@
+Goals of the night:
+-----------------------
+
+1- Issue with the camera					DONE			
+2- Automatic launching solution -> Killing camera process
+4- Projection							DONE
+5- Camera replacement						DONE
+6- Report starting
+7- Record and assign sounds to responses			DONE
+8- Lcd feedback							DONE
+9- Turn off camera LED 						DONE
+10- Modify Camera position					DONE
+11- NN
+12- Install IR LEDS
+12- Test all
