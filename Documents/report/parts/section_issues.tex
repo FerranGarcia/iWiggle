@@ -1,91 +1,32 @@
-The list of robot's main hardware components:
+\subsection{Limitations}
+
+The hardware of the Raspberry Pi doesn't allow to perform any intensive
+computations, so it is necessary to balance between robustness and
+computational time.
+
+\subsection{Hardware}
 
 \begin{itemize}
-  \item Raspberry Pi Model B Board
-  \item Raspberry Pi No-IR Camera
-  \item 2xEMG30 12v motor with encoder and 30:1 gearbox + mounting bracket
-  \item Ultrasound Proximity sensor
-  \item I2C Breakout Board
+  	\item The overall performance of the Raspberry Pi is satisfactory. 
+  	\item The reliability of the WiFi connection is low - the board can lose
+  connection to WiFi dongle at any time. Loss of the connection can also be caused by an
+external disturbance (e.g. sharp velocity changes).
+	\item RPi Camera Module is very sensitive to static electricity.
+	\item Sharp increase of the torque in the motors can cause the voltage drop in
+	the power supply that will lead to board shutdown
 \end{itemize}
 
-Insert images of the components (?).
+Power plug issues (?)
 
-\subsection*{Mechanical Part}
+\subsection{Software}
 
-The robot is built on a metal frame with two driving wheels mounted on a EMG30
-gearbox connected to the frame using the gearbox bracket. A metal ball wheel
-located in front of the robot provides additional support. The frame consists of
-metal profiles with a perforated plate that serves as a base for mounting
-electronic components.
+\begin{itemize}
+  \item OpenCV takes almost 9 hours to compile. (Include OpenCV compilation
+  guide?)
+  \item No Software is available for the GPU access
+\end{itemize}
 
-\subsection*{Electronics}
-
-The main electronic component of the robot is the Raspberry Pi single-board
-computer. Its technical specifications are listed in the Table
-\ref{tab:rpi_specs}.
-
-\begin{table}[h!]
-	\setlength\extrarowheight{2pt}
-    \begin{tabularx}{\textwidth}{XX}
-    
-    ~                 & ~                                                           \\
-    System on a chip  & Broadcom BCM2835                                            \\
-    CPU               & 700 MHz ARM11                                               \\
-    GPU               & Broadcom VideoCore IV @ 250 MHz                             \\
-    RAM               & 512 Mb shared with GPU                                      \\
-    Memory            & SD Card Slot                                                \\
-    Ports             & 2x USB, LAN, 3.5mm phone jack, HDMI,  GPIO (UART, I2C, SPI) \\
-    Power Consumption & 700 mA (3.5 W)                                              \\
-    
-    \end{tabularx}
-    \caption{Raspberry Pi Model B Specifications}
-    \label{tab:rpi_specs}
-\end{table}
-
-
-The board is powered using 11.1V Turnigy LiPo Battery via power adapter that
-splits the voltage into 12V (motors) and 5V lines. According to the external
-power supply measurements, the average total consumption during movement is
-(insert here).
-
-The Raspberry Pi peripherals include a WiFi adapter, GPIO Breakout board for
-simplifying connection, and a Raspberry Pi camera. RPi camera is a
-board-specific 5Mp camera module connected via 15-pin MIPI (Mobile Industry
-Processor Interface) connector. It is capable of capturing 1080p video and
-perform basic hardware video processing. Two different types of cameras were
-tested - standard camera and near-IR ``NoIR'' camera with the absence of
-infrared filter. The performance of these cameras compared to standard USB
-Webcam is shown in the Table \ref{tab:cam_perf}. In order to
-increase the reliability and robustness of NoIR camera, a couple of IR LEDs were
-installed to provide additional illumination.
-
-Talk about sign design for the near-IR camera here.
-
-% Fix table here
-\begin{table}[h!]
-	\setlength\extrarowheight{2pt}
-	\setlength\arraycolsep{5pt}
-    \begin{tabularx}{\textwidth}{XXXX}
-    Resolution / Camera Setup & Raspberry Pi  (CPU) + Raspberry Pi Camera &
-    Raspberry Pi (CPU) + Logitech C270 & Odroid-U3 (CPU) + Logitech C270 \\
-    160x120            & 18           & 9          & 30         \\
-    320x240            & 6            & 4.8        & 20         \\
-    640x480            & 2.5          & 2.3        & 11         \\
-    1280x720           & 0.6          & 0.8        & 4          \\
-    \end{tabularx}
-    \caption{Camera Performance comparison}
-    \label{tab:cam_perf}
-\end{table}
-
-As can be seen from the Table \ref{tab:cam_perf}, the main advantage of using
-RPi camera is its performance - it outperforms generic Webcam grace to hardware
-optimization and, in particular, absence of resizing routine in the code.
-However, the disadvantage lies in the specificity of the camera, that can only
-be used on the RPi board, while the USB Webcam can be used everywhere, so in
-order to port the code to another platform, the camera change as well as some
-code modification are required.
-
-The robot is also equipped with an ultrasound proximity sensor used for obstacle
-detection.
-
-An I2C LCD Screen module provides an interface for visual feedback.
+It is not very convenient to develop on the Raspberry Pi itself, so it was
+necessary to make the code cross-compilable. The development process was done
+MS Visual Studio. Remote access to RPi is established via SSH and an xServer.
+Remote Desktop Environment was provided by MobaXTerm software.

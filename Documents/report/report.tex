@@ -6,7 +6,7 @@
 \usepackage{amssymb}
 \usepackage{anysize}
 \usepackage{graphicx}
-\graphicspath{ {./images/} }
+\graphicspath{ {./images/}, {./parts/igor/} }
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{algorithm2e}
@@ -14,7 +14,9 @@
 \usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{titlesec}
 \usepackage{array}
+\usepackage{listings}
 \bibliography{bibliography.bib}
 
 \usepackage{tikz}
@@ -24,7 +26,6 @@
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mypurple}{rgb}{0.58,0,0.82}
 
-\usepackage{listings}
 
 \usepackage{caption}
 \DeclareCaptionFont{white}{\color{white}}
@@ -34,10 +35,16 @@
 \setlength{\parskip}{10pt}
 
 \marginsize{2cm}{2cm}{1cm}{1cm}
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% % % Commands
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries\space}
+{}
+{0pt}
+{}
 
-\usepackage{titlesec}
-\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
-
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% % % Document start
 \begin{document}
 
 %  Title and authors
@@ -56,6 +63,7 @@ Report provides information about done review the hardware design and implementa
 \end{abstract}
 
 \section{Introduction}
+\label{sec:intro}
 
 \input{parts/section_introduction.tex}
 
@@ -76,141 +84,22 @@ Report provides information about done review the hardware design and implementa
 	\input{parts/subsection_hardware.tex}
 	
 \subsection{Software}
+
+\input{parts/igor/software-intro.tex}
+
+\subsubsection{State machine}
+
+\input{parts/igor/state-machine.tex}
+
 \subsubsection{Actuators and sensing drivers}
 \input{parts/actuators_and_senging_drivers.tex}
+
 \subsubsection{Motion module}
+\input{parts/motion_module.tex}
 
-This module had to realise control of robot wheels. Since designed robot uses
-Dual 12Volt 2.8Amp H Bridge Motor Drive MD25 \footnote{\url{http://www.robot-electronics.co.uk/htm/md25i2c.htm}}, controlling the board is done using I2C bus system mode.
-Generally this module had to realize following actions:
-\begin{itemize}
-	\item drive motors by setting individual speeds for both wheels;
-	\item get heading of the robot by reading encoder values.
-\end{itemize}
-Thus these requirements led to splitting the whole module into two blocks:  one being responsible for driving motors and another for reading/writing encoders.
+\subsubsection{Vision module}
+\input{parts/igor/vision-module.tex}
 
-\begin{figure}[!ht]
-	\centering
-	\begin{tikzpicture}[node distance = 2cm, auto]
-	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
-	text width=5em, text centered, rounded corners, minimum height=4em]
-	\tikzstyle{line} = [draw, -latex']
-	% Place nodes
-	\node [block] (navigator) {Motion navigator};
-	\node [block, below of=navigator, xshift=-1.5cm] (motors) {Motors};
-	\node [block, below of=navigator, xshift= 1.5cm] (encoders) {Encoders};
-	% Draw edges
-	\path [line] (navigator) -| (motors);
-	\path [line] (navigator) -| (encoders);
-	\end{tikzpicture}
-	\caption{Motion module structure}
-	\label{fig:motion_structure}
-\end{figure}
-
-\subsection{Controlling motors}
-
-All communication between high level functions and motors is done via  I2C bus command register.
-The MD25 has 17 registers numbered 0 to 16 as follows:
-\begin{table}[h]
-	\begin{tabular}{@{}llll@{}}
-		\toprule
-		\textbf{Register} & \textbf{Name}     & \textbf{Read/Write} & \textbf{Description}                                             \\ \midrule
-		0                 & Speed1            & R/W                 & Motor1 speed (mode 0,1) or speed (mode 2,3)                      \\
-		1                 & Speed2/Turn       & R/W                 & Motor2 speed (mode 0,1) or turn (mode 2,3)                       \\
-		2                 & Enc1a             & Read only           & Encoder 1 position, 1st byte (highest),   \\
-		3                 & Enc1b             & Read only           & Encoder 1 position, 2nd byte                                     \\
-		4                 & Enc1c             & Read only           & Encoder 1 position, 3rd byte                                     \\
-		5                 & Enc1d             & Read only           & Encoder 1 position, 4th (lowest byte)                            \\
-		6                 & Enc2a             & Read only           & Encoder 2 position, 1st  byte (highest),  \\
-		7                 & Enc2b             & Read only           & Encoder 2 position, 2nd byte                                     \\
-		8                 & Enc2c             & Read only           & Encoder 2 position, 3rd byte                                     \\
-		9                 & Enc2d             & Read only           & Encoder 2 position, 4th byte (lowest byte)                       \\
-		10                & Battery volts     & Read only           & The supply battery voltage                                       \\
-		11                & Motor 1 current   & Read only           & The current through motor 1                                      \\
-		12                & Motor 2 current   & Read only           & The current through motor 2                                      \\
-		13                & Software Revision & Read only           & Software Revision Number                                         \\
-		14                & Acceleration rate & R/W                 & Optional Acceleration register                                   \\
-		15                & Mode              & R/W                 & Mode of operation (see below)                                    \\
-		16                & Command           & Write only          & Used for reset of encoder counts and module address changes      \\ \bottomrule
-	\end{tabular}
-	\caption{The MD25 register}
-\end{table}
-
-For controlling the motors, registers 0, 1 and 15 are used. Firstly, when initializing motor control, mode register (15) is modified.
-The mode register selects which mode of operation and I2C data input type the user requires. Here the type 3 was chosen and writing this value 
-to the mode register makes enables turn mode: speed1 controls both motors \textit{speed}, and speed2 becomes the \textit{turn} value. 
-Data is in the range of -128 for full reverse, 0 for stop and 127 for full forward speed of motors.
-
-It is worth to mention, that turn mode looks at the speed register to decide if the direction is forward or reverse. Then it applies a subtraction or addition of the turn value on either motor. If the direction is forward
-\begin{table}[!ht]
-	\centering
-	\begin{tabular}{lcl}
-		motor speed1 & = & speed - turn;\\
-		motor speed2 & = & speed + turn;
-	\end{tabular}
-\end{table}
-
-else the direction is reverse 
-\begin{table}[!ht]
-	\centering
-	\begin{tabular}{lcl}
-		motor speed1 & = & speed + turn;\\
-		motor speed2 & = & speed - turn.
-	\end{tabular}
-\end{table}
-
-Manipulating mentioned registers, 4 main motor controlling functions were implemented as seen in figure \ref{fig:motor_structure}.
-\begin{figure}[!ht]
-	\centering
-	\begin{tikzpicture}[node distance = 2cm, auto]
-	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
-	text width=5em, text centered, rounded corners, minimum height=4em]
-	\tikzstyle{line} = [draw, -latex']
-	% Place nodes
-	\node [block] (motors) {Motors};
-	\node [block, below of=navigator, xshift=-1.5cm] (stop) {Stop Motors};
-	\node [block, left of=stop, node distance = 3 cm] (drive) {Drive Motors};
-	\node [block, below of=navigator, xshift=1.5cm] (left) {Turn left};
-	\node [block, right of=left,  node distance = 3 cm] (right) {Turn right};
-	% Draw edges
-	\path [line] (motors) -| (drive);
-	\path [line] (motors) -| (stop);
-	\path [line] (motors) -| (left);
-	\path [line] (motors) -| (right);
-	\end{tikzpicture}
-	\caption{Motor controlling functions}
-	\label{fig:motor_structure}
-\end{figure}
-
-\subsection{Controlling encoders}
-
-For controlling the encoders, registers 2-9 and 16 are used.
-Manipulating mentioned registers, 3 main encoder controlling functions were implemented, which are presented figure \ref{fig:encoder_structure}.
-\begin{figure}[!ht]
-	\centering
-	\begin{tikzpicture}[node distance = 2cm, auto]
-	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
-	text width=5em, text centered, rounded corners, minimum height=4em]
-	\tikzstyle{line} = [draw, -latex']
-	% Place nodes
-	\node [block] (encoders) {Encoders};
-	\node [block, below of=navigator, xshift=-1.5cm] 	(rleft) {Read right encoder};
-	\node [block, left of=stop, node distance = 3 cm] 	(lleft) {Read left encoder};
-	\node [block, below of=navigator, xshift=1.5cm] 	(reset) {Reset both encoders};
-	\node [block, right of=left,  node distance = 3 cm] (angle) {Get robot heading};
-	% Draw edges
-	\path [line] (encoders) -| (rleft);
-	\path [line] (encoders) -| (lleft);
-	\path [line] (encoders) -| (reset);
-	\path [line] (encoders) -| (angle);
-	\end{tikzpicture}
-	\caption{Motor controlling functions}
-	\label{fig:encoder_structure}
-\end{figure}
-
-
-\clearpage
-\clearpage
 \section{ Final setup }
 \input{parts/final_setup}
 
@@ -222,7 +111,12 @@ Manipulating mentioned registers, 3 main encoder controlling functions were impl
 \section{Further improvements}
 
 
+\input{parts/igor/further-improvements.tex}
+
+Example of cite and referencing:\cite{craig2005introduction}
+
 \clearpage
 
+\printbibliography
 
 \end{document}
