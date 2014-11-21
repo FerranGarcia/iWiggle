@@ -1,21 +1,96 @@
 
-Three basic signs detected by the system are shown on figure below.
+The task of vision subsystem is to handle the image data acquired from Raspbery Pi camera. This handling includes two basic subtasks: sign detection and sign recognition.
 
-(color images of signs taken by camera)
+Three basic signs detected and recognized by the system are shown on figure below.
 
-These signs need to be detected and classified by the camera In order to detect
+-----------(color images of all three signs taken by camera)
 
-\paragraph{Thresholding}
+Different methods and challenges encountered in vision module are described and discussed separately in the following chapters of the report.
 
-HSV chosen intuitively
+\subsubsection{Thresholding}
 
-YCrCb proved better
+The first and the most intuitive approach to sign detection procedure was simple color thresholding, since signs which had to be detected are purely red.
 
-IR camera and LED improved result? (should comparison go here?)
+The initial choice for color thresholding was HSV color space. Ranges of H (hue), S (saturation) and V (value) channels are [0,180], [0, 255] and [0, 255], respectively. In order to segment only red color, values of H (hue) channel greater than 170 and lower than 10 were used, since this range represents the band of red color. Additionally, too dark (V $ < $ 40), to bright (V $ > $ 220) and non-saturated pixels (S $ < $ 40) were rejected to improve the quality of segmentation. Results are shown on the figure ~\ref{fig:color-spaces}.
+
+\begin{figure}[th!]
+	\centering
+	\begin{subfigure}[b]{0.3\textwidth}
+		\centering
+	\includegraphics[scale=0.33]{thresholding-raw.png}
+	\subcaption{Raw camera input}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.3\textwidth}
+		\centering
+		\includegraphics[scale=0.7]{thresholding-hsv.png}
+		\subcaption{HSV color space}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.3\textwidth}
+		\centering
+		\includegraphics[scale=0.7]{thresholding-YCrCb.png}
+		\subcaption{YCrCb color space}
+	\end{subfigure}
+	\caption{Comparison of color spaces used for thresholding}
+	\label{fig:color-spaces}
+\end{figure}
+
+After some testing, YCrCb color space proved to give better results for segmentation, as shown on figure above. As a result, YCrCb color space was used in final implementation.
+
+Usage of IR camera did not affect the recognition quality of the thresholding procedure in regular, normal lighting conditions. On the other hand, it drastically increased the accuracy in low lighting conditions, which is described in Hardware section of the report.
+
+The biggest connected component (blob) int he thresholded image is considered to be a sign. Bounding box of the biggest blob determined the area of the thresholded image to be passed in as an input to the sign classification module. 
 
 \subsection{Classification of the signs using statistical moments}
 
-Basics about statistical moments
+Taking into consideration the relatively low computational power of the hardware platform used to develop the system, priority for the chosen sign classification algorithm was low complexity.
+
+After some thorough analysis of the available option, statistical moments proven to be the best option.
+
+For an arbitrary binary (i.e. thresholded) input image system can compute statistical moments of desired order. The moment of importance in case of sign classification was center of mass or first order moment. It can be thought of average coordinate of all white pixels for both axes.
+
+\begin{figure}[th!]
+	\centering
+	\begin{subfigure}[b]{0.25\textwidth}
+		\centering
+		\includegraphics[scale=0.55]{moments-arrow-raw.png}
+		\subcaption{Raw camera input}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.25\textwidth}
+		\centering
+		\includegraphics[scale=0.8]{moments-arrow-segm.png}
+		\subcaption{Arrow}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.2\textwidth}
+		\centering
+		\includegraphics[scale=0.8]{moments-cross-segm.png}
+		\subcaption{Cross}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.2\textwidth}
+		\centering
+		\includegraphics[scale=0.9]{moments-circle-segm.png}
+		\subcaption{Circle}
+	\end{subfigure}
+	\caption{Visual cues for sign classification using statistical moments}
+	\label{fig:statistical-moments}
+\end{figure}
+
+Figure \ref{fig:statistical-moments} demonstrates intuition behind visual cues used for discrimination of three different types of signs. By computing the distance of center of the mass (green rectangle) and center of the cropped image segment where the sign was detected (blue rectangle) we can perform initial discrimination between \textbf{arrow} and \textbf{rest two signs}. Distance is going to be close to zero in case of cross and circle since object are symmetrical around two mutually normal axes. Arrow is not symmetrical around one axis, so it's center of the mass will be slightly shifter towards the tip of the arrow and this is the property used to distinguish an arrow from the circle and cross.
+Table \ref{tab:moments} shows average distance of center of the mass from image center proportional to cropped image size. Clear observation is that thresholding this distance to 10 $\%$ can give is pretty good estimate of probability that sign belongs to arrow class.
+
+If this distance is close to zero, additional step is needed to determine is the observed sign cross or circle. Approach used in this step was investigation of zero-order moment, which gives the number of white pixels in the image. By taking the ratio of zero order moment and total number of pixels of sign area, we can distinguish between cross and circle. Intuition behind this metric lies in the fact that circle has bigger surface than cross of the same bounding box size, so the percentage of space it occupies in the cropped image area where the sign is going to be larger than if it was cross. Table \ref{tab:moments} gives suitable value of threshold of 70 $\%$.
+
+\begin{table}[th!]
+\centering
+\begin{tabular}{l*{2}{c}r}
+	Sign class			& Distance of first moment & Ratio of second order moment  \\
+	\hline
+	Arrow 				& 18.41 & 56.44  \\
+	Cross            	& 1.39 & 54.20  \\
+	Circle           	& 0.97 & 89.63  \\
+\end{tabular}
+\caption{Numerical values of statistical moments given in $\%$ wrt. image size}
+\label{tab:moments}
+\end{table}
 
 Images of all three signs with drawn moments and numerical explanation of distinction between those three
 
@@ -32,6 +107,8 @@ Description of tested recognition method (sliding window, random, ...)
 Performance comparison with previous method.
 
 \subsection{Arrow angle calculation}
+
+After sign has been classified as arrow, additional step needs to be performed in order to extract the arrow angle relative to the orientation of the robot at the moment of observation.
 
 Description of the initial way (using moments) and failing scenarios. 
 
