@@ -1,9 +1,37 @@
 
-The task of vision subsystem is to handle the image data acquired from Raspbery Pi camera. This handling includes two basic subtasks: sign detection and sign recognition.
+The task of vision subsystem is to handle the image data acquired from Raspbery Pi camera. This handling includes two basic subtasks: sign detection and sign recognition (classification).
 
-Three basic signs detected and recognized by the system are shown on figure below.
+Three basic signs detected and recognized by the system are shown on figure \ref{fig:raw-signs}. They are printed on a flat paper surface.
 
------------(color images of all three signs taken by camera)
+\begin{figure}[th!]
+	\centering
+	\begin{subfigure}[b]{0.2\textwidth}
+		\centering
+		\includegraphics[scale=0.25]{sign-circle.png}
+		\subcaption{Circle (goal)}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.4\textwidth}
+		\centering
+		\includegraphics[scale=0.25]{sign-arrow.png}
+		\subcaption{Arrow (direction change)}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.2\textwidth}
+		\centering
+		\includegraphics[scale=0.25]{sign-cross.png}
+		\subcaption{Cross (stop)}
+	\end{subfigure}
+	\caption{Shape of signs used by the system}
+	\label{fig:raw-signs}
+\end{figure}
+
+Basic workflow of the vision processing module is split into functional blocks, shown on the figure \ref{fig:vision-module-blocks}.
+
+\begin{figure}[th!]
+	\centering
+		\includegraphics[scale=0.5]{image-module.png}
+	\caption{Workflow of vision module}
+	\label{fig:vision-module-blocks}
+\end{figure}
 
 Different methods and challenges encountered in vision module are described and discussed separately in the following chapters of the report.
 
@@ -92,7 +120,7 @@ If this distance is close to zero, additional step is needed to determine is the
 \label{tab:moments}
 \end{table}
 
-Images of all three signs with drawn moments and numerical explanation of distinction between those three
+Described method proved to be sufficiently accurate for practical purposes, while still remaining \textbf{computationally tractable} on available hardware. More robust classification methods will be discussed in section \ref{sec:future-improvements} and are subject to future investigation.
 
 \subsection{Neural network classifier}
 
@@ -106,19 +134,71 @@ Description of tested recognition method (sliding window, random, ...)
 
 Performance comparison with previous method.
 
-\subsection{Arrow angle calculation}
+\subsection{Computing arrow orientation}
 
 After sign has been classified as arrow, additional step needs to be performed in order to extract the arrow angle relative to the orientation of the robot at the moment of observation.
 
-Description of the initial way (using moments) and failing scenarios. 
+Initial idea was to use already computed information about the statistical moments to get the orientation of the arrow. Center of the mass and center of the cropped image segment containing the sign form a vector pointing towards tip of the arrow. We can exploit this information to determine the angle of the vector, as shown on figure \ref{fig:arrow-angle-computation}. Although not so robust, this was intuitive and the fastest method to prototype since all moments are already computed for sign classification step, which meant that this method would reduce computational overhead.
 
-Idea of using line fitting, with slight theoretical background and results.
+\begin{figure}[th!]
+	\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[scale=0.7]{moments-arrow-raw.png}
+		\subcaption{Raw camera input}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[scale=1]{moments-arrow-segm-angle.png}
+		\subcaption{Arrow}
+	\end{subfigure}
+		\begin{subfigure}[b]{0.45\textwidth}
+			\centering
+			\includegraphics[scale=0.7]{moments-arrow-segm-angle-math.png}
+			\subcaption{Angle from moments}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.45\textwidth}
+			\centering
+			\includegraphics[scale=0.55]{moments-arrow-segm-angle-fitting.png}
+			\subcaption{Line fitting}
+			\label{fig:line-fitting}
+		\end{subfigure}
+	\caption{Computation of the arrow orientation}
+	\label{fig:arrow-angle-computation}
+\end{figure}
+
+After implementation and extensive testing of mentioned method, some scenarios where it fails were met. One of them is shown in the figure , where wrong value of the angle is computed or it wasn't reliable enough (it was oscillating a lot). Oscillation problem could have been solved by filtering, but instead a different approach was chosen.
+
+Instead of focusing on statistical properties of the contour of the arrow better approach is to utilize the whole information about it's contour. Contour of the arrow shape is extracted from segmented binary image of the arrow. Array of points representing the contour is then fitted to the line in \textbf{Linear Least Squares fashion (LLS)}, which is a well known function minimization framework for linear systems.
+
+The basic idea is posing the problem of finding unknown arrow angle $\theta$ as function minimization problem, where input is defined as set $C$ of $N$ contour points $C_i \in \mathbb{R}^2$. Cost function on a set of points $C$ and chosen angle $\theta$ is defined as sum of the squared distance of each contour point $C_i$ from the line with angle $\theta$, which is formally given by equation \ref{eq:LLS}. Minimizing this function over $\theta$ gives the optimal line angle that fits the given contour points.
+
+\begin{equation}
+f(C,\theta)=
+\frac{1}{N}
+\sum_{i=1}^{N}distance(C_i, line(\theta))^2
+\label{eq:LLS}
+\end{equation}
+
+Figure \ref{fig:line-fitting} shows two arbitrary lines on top of the segmented image of the arrow. Blue line has higher value of the cost function than the red line because it doesn't fit the given data (contour points) the best possible way. Red line is the optimal angle for given shape, determined by least square solution of the equation \ref{eq:LLS}.
+
+OpenCV has LLS implementation of described line fitting algorithm, which was used in the final version of the solution. Using this method improved the accuracy and stability of orientation of the arrow without significant impact on performance, since optimization problem can be solved using techniques linear algebra, which are computationally inexpensive.
 
 \subsection{Solving partial occlusion and re-detection}
 
-Explanation of problem of partial occlusion and re-detection, when does it happen and why we want to handle it.
+Problem of partial occlusion arises when robot is moving forward and a sign is slowly getting into the area observed by robot. Some time is needed before the sign completely enters the view and attempt of classification partially visible sign would result in misclassification in most of te cases.
 
-Explanation of perceptive area and proximity area.
+Also, there is a problem of detecting proximity of the robot to the observed sign, because desired behavior is to switch states only when the robot is close to sign it detects and not as soon it detects it.
 
+In order to prevent attempts of classifications of partially visible signs and detecting proximity of the robot to the sign, whole view of the camera is split into two regions of interest: \textbf{perceptive area} and \textbf{proximity area}, shown on figure \ref{fig:camera-view-areas}. Using these view areas system is able to overcome the described problems in very easy and intuitive way.
 
+\begin{figure}[th!]
+	\centering
+		\includegraphics[scale=0.5]{thresholding-raw.png}
+	\caption{Perceptive (green) and proximity (red) area}
+	\label{fig:camera-view-areas}
+\end{figure}
 
+Detection of the sign (segmentation and blob detection) are performed at every iteration and position of the object is extracted as center of the detected blob. For predefined camera position and physical size of the signs, it can be assumed that \textbf{if object's center is inside the perception area it will be completely inside the camera view}. This allows reliable determination of exact classification moment, without risk of classifying partially visible objects.
+
+Similar strategy is used for detecting the proximity of the sign: if it's center is in the proximity area it is assumed to be close to the robot. Since slightly delayed image processing and low FPS, it will take some time for robot to determine that it approached the sign. This will result in robot ending up exactly on the sign at the moment when it switches to execution of the command defined by the sign.
