@@ -34,6 +34,30 @@ Basic workflow of the vision processing module is split into functional blocks, 
 \end{figure}
 
 Different methods and challenges encountered in vision module are described and discussed separately in the following chapters of the report.
+\paragraph{Inverse Perspective Mapping}
+
+In this project, a single camera mounted in the front of the robot with small tilting angle is used to capture the images. Since object of interest are found on a ground plane, before applying any image recognition and classification methods, it is common-sense to process obtained camera images using Inverse Perspective Mapping (IPM).
+Knowing that camera tilting angle and position on the robot is fixed, this transform is just a  plane-to-plane homography to convert the perspective image to
+top view to the ground plane image. The IPM can be applied to all three planes of colour image separately or only on selected colour plane. Example of the transform can be seen in figure \ref{fig:ipm_example}.
+\begin{figure}[!ht]
+	\centering
+	\begin{subfigure}[b]{0.3\textwidth}
+		\includegraphics[width = 1\textwidth]{invPersInput.png}
+		\caption{Robot captured image}
+		\label{fig:}
+	\end{subfigure}%
+	~ 
+	\begin{subfigure}[b]{0.3\textwidth}
+		\includegraphics[width = 1\textwidth]{invPersOutput.png}
+		\caption{Output image after IPM}
+		\label{fig:}
+	\end{subfigure}
+	%main caption
+	\caption{Example of Inverse Perspective Mapping on a single colour image plane}
+	\label{fig:ipm_example}
+\end{figure}
+
+\newpage
 
 \paragraph{Thresholding}
 
@@ -62,11 +86,11 @@ The initial choice for color thresholding was HSV color space. Ranges of H (hue)
 	\label{fig:color-spaces}
 \end{figure}
 
-After some testing, YCrCb color space proved to give better results for segmentation, as shown on figure above. As a result, YCrCb color space was used in final implementation.
+After some testing, YCrCb color space proved to give better results for segmentation, as shown on figure above. As a result, YCrCb colour space was used in final implementation.
 
 Usage of IR camera did not affect the recognition quality of the thresholding procedure in regular, normal lighting conditions. On the other hand, it drastically increased the accuracy in low lighting conditions, which is described in Hardware section of the report.
 
-The biggest connected component (blob) int he thresholded image is considered to be a sign. Bounding box of the biggest blob determined the area of the thresholded image to be passed in as an input to the sign classification module. 
+The biggest connected component (blob) in the thresholded image is considered to be a sign. Bounding box of the biggest blob determined the area of the thresholded image to be passed in as an input to the sign classification module. 
 
 \paragraph{Classification of the signs using statistical moments}
 
