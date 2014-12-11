@@ -1,17 +1,17 @@
 
-\section{Robustness of sign classification}
+\subsection{Robustness of sign classification}
 
 Current sign classification approach is computationally inexpensive and has simple implementation and execution. Price paid for these benefits is low robustness, meaning that there are times when robot detects some other red object's shape as one of the three signs that it needs to classify.
 
 In order to avoid these issues a more robust classifier is needed. Approach using artificial neural networks, Support Vector Machines or any other machine learning technique would require training classifiers on another (more powerful) CPU and loading trained classifier to the robot just for the purposes of classification.
 
-\section{Complex game rules and sign diversity}
+\subsection{Complex game rules and sign diversity}
 
 Current rules for interaction with robot rely only on couple of simple actions and available signs. Software control architecture is built in a way modular way, which enables easy addition of the new signs under assumption of robust classifier able to distinguish between all currently known signs and newly added one.
 
 Expanding set of available signs could enrich the game experience by introducing new objectives, goals and obstacles for the children to play with.
 
-\section{Hardware improvements}
+\subsection{Hardware improvements}
 
 Although system is currently able to perform all desired tasks, a \textbf{more powerful processing hardware would make it faster, more responsive} and, thus, more fun for children to play with. Having only 6 FPS from camera limits the maximum velocity of robot movement as well, so games would look more dynamic if robot was able to move faster. 
 
