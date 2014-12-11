@@ -3,21 +3,21 @@ One of the the most common and intuitive approaches for implementation of softwa
 
 System controlled by state machine has certain number of possible, unique and well defined states that it can be in at every moment of execution. State defines the behavior of the system in every discrete moment of time, including three important aspects: sensor data acquisition, output behavior computation and state transition check. In other words, every state has it\rq{}s own logic for doing all of these three mentioned steps, which gives a lot of variability for possible control scenarios. It\rq{}s worth of mentioning that some states might skip certain steps or perform some steps more than once without state transition check, for example.
 
-\subsection{Sensor data acquisition}
+\paragraph{Sensor data acquisition}
 
 First step in state machine control loop is sensor acquisition step. If possible, data is acquired from all input sensors in order to determine current state of the environment. This includes acquisition of camera image using OpenCV, reading heading angle from motor driver and reading distances from ultrasonic sensor driver.
 
 Last values of all the readings are always stored in local members of the class, so they can be referenced between successive acquisitions.
 
-\subsection{Output behavior computation}
+\paragraph{Output behavior computation}
 
 Based on the sensed input data values for all output units are being calculated. This includes linear and angular wheel velocities, message for LCD display, sound to be played on speakers, etc.
 
-\subsection{State transition condition}
+\paragraph{State transition condition}
 
 Every state has to have clearly defined condition which will make the system switch to any of the other states. System remains in the current state until one of the state transition conditions has been met.
 
-\subsection{Possible system states}
+\paragraph{Possible system states}
 
 (bulleting started)
 

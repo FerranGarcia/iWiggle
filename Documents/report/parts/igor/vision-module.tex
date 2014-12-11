@@ -35,7 +35,7 @@ Basic workflow of the vision processing module is split into functional blocks, 
 
 Different methods and challenges encountered in vision module are described and discussed separately in the following chapters of the report.
 
-\subsubsection{Thresholding}
+\paragraph{Thresholding}
 
 The first and the most intuitive approach to sign detection procedure was simple color thresholding, since signs which had to be detected are purely red.
 
@@ -68,7 +68,7 @@ Usage of IR camera did not affect the recognition quality of the thresholding pr
 
 The biggest connected component (blob) int he thresholded image is considered to be a sign. Bounding box of the biggest blob determined the area of the thresholded image to be passed in as an input to the sign classification module. 
 
-\subsection{Classification of the signs using statistical moments}
+\paragraph{Classification of the signs using statistical moments}
 
 Taking into consideration the relatively low computational power of the hardware platform used to develop the system, priority for the chosen sign classification algorithm was low complexity.
 
@@ -122,7 +122,7 @@ If this distance is close to zero, additional step is needed to determine is the
 
 Described method proved to be sufficiently accurate for practical purposes, while still remaining \textbf{computationally tractable} on available hardware. More robust classification methods will be discussed in section \ref{sec:future-improvements} and are subject to future investigation.
 
-\subsection{Neural network classifier}
+\paragraph{Neural network classifier}
 
 Justification of usage neural networks.
 
@@ -134,7 +134,7 @@ Description of tested recognition method (sliding window, random, ...)
 
 Performance comparison with previous method.
 
-\subsection{Computing arrow orientation}
+\paragraph{Computing arrow orientation}
 
 After sign has been classified as arrow, additional step needs to be performed in order to extract the arrow angle relative to the orientation of the robot at the moment of observation.
 
@@ -184,7 +184,7 @@ Figure \ref{fig:line-fitting} shows two arbitrary lines on top of the segmented 
 
 OpenCV has LLS implementation of described line fitting algorithm, which was used in the final version of the solution. Using this method improved the accuracy and stability of orientation of the arrow without significant impact on performance, since optimization problem can be solved using techniques linear algebra, which are computationally inexpensive.
 
-\subsection{Solving partial occlusion and re-detection}
+\paragraph{Solving partial occlusion and re-detection}
 
 Problem of partial occlusion arises when robot is moving forward and a sign is slowly getting into the area observed by robot. Some time is needed before the sign completely enters the view and attempt of classification partially visible sign would result in misclassification in most of te cases.
 
