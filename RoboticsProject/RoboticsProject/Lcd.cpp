@@ -35,8 +35,15 @@ void Lcd::sendText(const char* text){
 	// because text must be sent to the command register (0), however if a non zero is recieved
 	// first anything after that point is displayed on the screen. The leading space
 	// ensures all text will be displayed.
-
 #ifdef __linux__
+
+	buf[0] = 0;													// Commands to clear the screen
+	buf[1] = 12;
+
+	if ((write(fd, buf, 2)) != 2) {								// clear the screen
+		printf("Error writing to i2c slave\n");
+		exit(1);
+}
 	if ((write(fd, text, strlen(text))) != strlen(text)) {					
 		printf("Error writing to i2c slave\n");
 		exit(1);
