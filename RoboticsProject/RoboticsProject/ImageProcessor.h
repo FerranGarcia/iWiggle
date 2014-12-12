@@ -29,6 +29,6 @@ public:
 
 	cv::Rect perceptionArea, proximityArea;
 
-	Mat getDefaultPerspectiveTransform();
+	Mat getDefaultPerspectiveTransform(const double IMG_WIDTH, const double IMG_HEIGHT);
 };
 
