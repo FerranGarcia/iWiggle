@@ -44,7 +44,7 @@ int loadConstants(char* filename) {
 	XMLElement* ints = root->FirstChildElement("int");
 
 	Constants::IMG_WIDTH = ints->FirstChildElement("IMG_WIDTH")->IntAttribute("value");
-	Constants::IMG_HEIGHT = ints->FirstChildElement("IMG_WIDTH")->IntAttribute("value");
+	Constants::IMG_HEIGHT = ints->FirstChildElement("IMG_HEIGHT")->IntAttribute("value");
 	Constants::FOC_WIDTH = ints->FirstChildElement("FOC_WIDTH")->IntAttribute("value");
 	Constants::FOC_HEIGHT = ints->FirstChildElement("FOC_HEIGHT")->IntAttribute("value");
 	Constants::THRESH_H_LOW = ints->FirstChildElement("THRESH_H_LOW")->IntAttribute("value");
