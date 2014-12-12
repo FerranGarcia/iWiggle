@@ -68,7 +68,7 @@ void StateMachine::Tick() {
 
 		// rotate right
 		resultingLinear = 0;
-		resultingAngular = 5;
+		resultingAngular = 4;
 
 		// STATE SWITCH CONDITION
 		// if last seen sign is reliable, start approaching it
@@ -142,13 +142,13 @@ void StateMachine::Tick() {
 
 			std::cout << "Current robot Heading: " << headingCurrent << std::endl;
 #ifdef __linux__
-			usleep(3000000);
+			usleep(1000000); // wait 1 seconds for the next function call
 #endif
 			std::cout << "//--------- Angle turn started --------//" << std::endl;
 			motion.turnAngle(angleToTurn, 5);
 			std::cout << "//--------- Angle turn completed ------//" << std::endl;
 #ifdef __linux__
-			usleep(3000000);
+			usleep(1000000); // wait 1 seconds for the next function call
 #endif
 
 			// broadcast notifications
