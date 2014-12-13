@@ -1,34 +1,27 @@
 \subsection{Limitations}
 
-The hardware of the Raspberry Pi doesn't allow to perform any intensive
-computations, so it is necessary to balance between robustness and
-computational time.
+The hardware of the Raspberry Pi does not allow to perform any intensive
+computations, so to balance between robustness and computational time is a must.
 
 \subsection{Hardware}
 
 \begin{itemize}
-  	\item The overall performance of the Raspberry Pi showed satisfactory
-  	results for the given problem.
-  	\item The reliability of the WiFi connection is low - the board can lose
-  connection to WiFi dongle at any time. Loss of the connection can also be caused by an
-external disturbance (e.g. sharp velocity changes).
+  	\item The overall performance of the Raspberry Pi showed satisfactory results for the given problem.
+  	\item The reliability of the WiFi connection is low - the board is loosing the connection to WiFi dongle frequently. Loss of the connection can also be caused by an external disturbance (e.g. sharp velocity changes).
 	\item RPi Camera Module is very sensitive to static electricity.
 	\item Sharp increase of the torque in the motors can cause the voltage drop in
-	the power supply that will lead to board shutdown
+	the power supply that will lead to shut down the board.
 \end{itemize}
-
-Power plug issues (?)
 
 \subsection{Software}
 
 \begin{itemize}
-  \item OpenCV takes almost 9 hours to compile. (Include OpenCV compilation
-  guide?)
-  \item No Software is available for the GPU access
+  \item OpenCV takes almost 9 hours to compile.
+  \item No Software is available for the GPU access.
 \end{itemize}
 
 It was necessary to synchronize the software development for the board between
-the group participants, so the development process was done using Microsoft
-Visual Studio 2013. This lead to the necessity of making the code
-cross-compilable. Remote access to RPi is established via SSH and an xServer.
+the group participants. The development process was done using Microsoft Visual Studio 2013, so this led to the necessity of making the code
+cross-compilable. 
+Remote access to RPi is established via SSH and an xServer.
 Remote Desktop Environment was provided by MobaXTerm software.

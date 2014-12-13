@@ -1,22 +1,20 @@
 
 \subsection{Robustness of sign classification}
 
-Current sign classification approach is computationally inexpensive and has simple implementation and execution. Price paid for these benefits is low robustness, meaning that there are times when robot detects some other red object's shape as one of the three signs that it needs to classify.
+Current sign classification approach is computationally inexpensive and has a simple implementation and execution. It results in low robustness, meaning that on some occasions the robot detects some other red object's shape as one of the three signs that it needs to classify.
 
-In order to avoid these issues a more robust classifier is needed. Approach using artificial neural networks, Support Vector Machines or any other machine learning technique would require training classifiers on another (more powerful) CPU and loading trained classifier to the robot just for the purposes of classification.
+In order to avoid these issues, a more robust classifier is required. An approach using artificial neural networks, Support Vector Machines or any other machine learning technique would require training classifiers on another (more powerful) CPU and loading the trained classifier to the robot just for the purpose of classification.
 
 \subsection{Complex game rules and sign diversity}
 
-Current rules for interaction with robot rely only on couple of simple actions and available signs. Software control architecture is built in a way modular way, which enables easy addition of the new signs under assumption of robust classifier able to distinguish between all currently known signs and newly added one.
+Current rules for interaction with robot rely only on a couple of simple actions and available signs. Software control architecture is built in a modular way, which enables easy addition of the new signs under assumption of robust classifier able to distinguish between all currently known signs and newly added one.
 
 Expanding set of available signs could enrich the game experience by introducing new objectives, goals and obstacles for the children to play with.
 
 \subsection{Hardware improvements}
 
-Although system is currently able to perform all desired tasks, a \textit{more powerful processing hardware would make it faster, more responsive} and, thus, more fun for children to play with. Having only 6 FPS from camera limits the maximum velocity of robot movement as well, so games would look more dynamic if robot was able to move faster. 
-
-It would, also, enable usage of more advanced and, at the same time, more robust algorithms for image processing. This would \textit{remove some limitations and conditions} put on the usage of the robot, like camera pointing only towards ground (floor) plane, maximum distance of sign placement, sign shape and color restrictions, etc.
-
-\textit{More sensors} would enrich engagement of the children as well by providing diverse set of ways to interact with the robot. 
+Although system is currently capable of performing all desired tasks, a more powerful processing hardware would make it faster, more responsive and funnier for children to play with. Having only 6 \textit{fps} from camera, limits the maximum speed of robot movement so games would look more dynamic if the robot were able to move faster. 
+It would also enable usage of more advanced and, at the same time, more robust algorithms for image processing. This would remove some limitations and conditions put on the usage of the robot, like camera pointing only towards ground (floor) plane, maximum distance of sign placement, sign shape and colour restrictions, etc..
+More sensors would enrich engagement of the children as well by providing diverse set of ways to interact with the robot. 
 
 
