@@ -1,16 +1,78 @@
-\begin{itemize}
-\item
-Explain the final setup of the robot. Specially the things that were not included initially (IR camera, IR leds, button to start program).
-\item
-Testing results.
-	\begin{itemize}
-	\item
-	How homography helps.
-	\item
-	How IR helps.
-	\item
-	How improvement of arrow angle detection helps.
-	\end{itemize}
-\item
-Specifications achieved (fps, missdetections, etc.)
-\end{itemize}
+During this section the final setup of the robot will be reviewed. First the differences between the initial and the final robot setup will be explained, in terms of hardware, and second the results obtained with it, trying to discuss a bit the reason of them.
+
+\subsection{Innovations in setup (hardware)}
+
+Mainly the innovations on hardware can be divided in two different parts, the ones that are helping the \textit{vision module}, and the ones that are for providing feedback or interaction with the children. The first group includes the new near-IR camera and the IR LED. The second group contains the button and the speaker.
+
+The aim of the first group is to boost the performance of the \textit{vision module}. Mainly it is focused in the use of IR lighting, with the addition of IR LED and the replacement of the regular camera by a near-IR one. Also the position of the camera has been changed in order to increase the \textit{field of view}.
+
+The second group, as said above, tries to improve the experience of the children by adding interaction. The button will allow to start and stop the program when needed. Even it is quite simple it is important to do such action so the robot does not need to be connected to the computer in order to initialize the program again. The speaker will provide sound feedback. For example in the case of the button it will play a short sound so the children know when the robot has started the program or it has closed it.
+
+
+\subsection{Results and discussion}
+
+In this subsection the results obtained during the different tests will be presented. Some comparison with old and new methods will be reviewed in order to see the improvements done and the performance of the current program. 
+
+One of the first things that was implemented in the \textit{vision module} was the angle detection of the arrow. As explained in previous sections firstly it was using the center of mass of the contour and the center of the rectangle in order to get the angle. This method had a lot of error and it was producing a deviation of $\pm 20º$ according to the real value. Also the angle computed was changing very fast in this range and it was difficult to obtain a clear measure. In order to improve that a new method was designed which fit a line along the arrow. This solution is really easy to implement and the results shows that the deviation is only $\pm 3º$ with respects of the real value. With this little improvement the performance of the angle detection gets increased, thus the turns of the robot are much precise with the direction pointed by the arrow. Figure \ref{fig:angle} represents this improvement in a visual way.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+  \begin{axis}[
+        xtick={},
+        xticklabels={},
+        ytick={},
+        yticklabels={},
+        axis lines = middle,
+        ymin=-3, ymax=3,
+        xmin=2, xmax=4,
+      axis equal]
+      
+      \addplot[black,sharp plot,update limits=false, ->] 
+      			coordinates {(0,0) (4,2)}
+      			node[above] at (axis cs:2.7,0.3) {$+20º$}
+				node[above] at (axis cs:2.7,-0.8) {$-20º$};
+      	
+      \addplot[black,sharp plot,update limits=false, ->] 
+        		coordinates {(0,0) (4,-2)};
+
+        
+      \draw (axis cs:2,-1)arc[radius=2cm,start angle=-30,end angle=27];
+
+    \end{axis}
+\end{tikzpicture}
+\begin{tikzpicture}
+  \begin{axis}[
+        xtick={},
+        xticklabels={},
+        ytick={},
+        yticklabels={},
+        axis lines = middle,
+        axis line style={->},
+        ymin=-3, ymax=3,
+        xmin=2, xmax=4,
+      axis equal]
+      
+      \addplot[black,sharp plot,update limits=false, ->] 
+      			coordinates {(0,0) (4,0.5)}
+      			node[above] at (axis cs:2.7,0.3) {$+3º$}
+				node[above] at (axis cs:2.7,-0.9) {$-3º$};
+      	
+      \addplot[black,sharp plot,update limits=false, ->] 
+        		coordinates {(0,0) (4,-0.5)};
+
+        
+      \draw (axis cs:2,-0.25)arc[radius=2cm,start angle=-8,end angle=5.8];
+
+    \end{axis}
+\end{tikzpicture}
+\caption{Comparison between the two methods studied for computing the angle of the arrow. In the left the old method is giving $\pm 20º$ while the new method reduces substantially the error.}
+\label{fig:angle}
+\end{figure}
+
+One of the biggest problems is the classification of the signs. This is probably one of the points that should be improved if future work is done in the robot. In the current setting the robot is able to distinguish easily between the cross and the circle because of the \textit{fill ratio}. However the arrow is more difficult to detect leading up to a $20\%$ of \textit{false negatives}. This means that every five times and arrow is shown to the robot one is classified as another sign. This result may vary depending on the lighting conditions although the IR signals can avoid loosing precision in low light conditions. The lack of accuracy of the center of mass and center of rectangle method is leading to this \textit{false negatives} because sometimes this two points are not split enough and the sign is not classified as an arrow. Probably getting some information about the shape of the bounding box would help in order to improve the arrow detection.
+
+It has been also detected that when the arrow is placed pointing near $90º$ either left or right, the detections are much more better than when the arrow is pointing forward with respects to the current angle of the robot. This is probably caused by the perspective of the camera with respects to the ground plane. Whenever the arrow is pointing forward the deformation due to the perspective is causing the center of mass to be very close to the center of the bounding box. More stylized arrows would probably solve the problem by shifting a bit the center of mass towards the direction of the arrow. In this case it would be difficult to use the shape of the bounding box since an arrow in perspective is seen most of the times in a shape similar to a square.
+
+As seen in table \ref{tab:cam_perf} of the hardware section the camera of the Raspberry Pi is able to give up to 18 \textit{frames per second}. However this speed is impossible to achieve due to the high demand on computational resources of the \textit{vision module}. The tests during most of the implementation were always performed using \textit{graphical user interface} on the Raspberry Pi and showing results on an external display. This was the unique way to check that everything was working perfectly on the RPi since all the code was developed on \textit{Visual Studio} in \textit{Windows}. The \textit{fps} achieved with this configuration were very close to 5, in an image of $160x120$. However the final version of the program does not need to show anything on screen since the robot will be moving around a room with no connection to external screens or other computers. This allows to avoid the execution of all the lines in the code that refers to the \textit{GUI}, mainly showing images and plotting lines, rectangles, proximity areas, etc. 
+

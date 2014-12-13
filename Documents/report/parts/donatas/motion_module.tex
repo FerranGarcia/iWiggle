@@ -1,5 +1,5 @@
-This module had to realise control of robot wheels. Since designed robot uses
-Dual 12Volt 2.8Amp H Bridge Motor Drive MD25 \footnote{\url{http://www.robot-electronics.co.uk/htm/md25i2c.htm}}, controlling the board was realised using I2C bus system mode.
+This module connects desired action behaviour via the control of  robot wheels. Since designed robot uses
+Dual 12Volt 2.8Amp H Bridge Motor Drive MD25 \footnote{\url{http://www.robot-electronics.co.uk/htm/md25i2c.htm}} board, controlling the wheels was accomplished using I2C bus system mode.
 Generally this module had to realize following actions:
 \begin{itemize}
 	\item drive motors by setting individual speeds for both wheels;
@@ -12,7 +12,7 @@ These requirements led to splitting the whole module into two blocks:  one being
 	\begin{tikzpicture}[node distance = 2cm, auto]
 	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
 	text width=5em, text centered, rounded corners, minimum height=4em]
-	\tikzstyle{line} = [draw, -latex']
+	\tikzstyle{line} = [draw, -latex', line width =2pt]
 	% Place nodes
 	\node [block] (navigator) {Motion navigator};
 	\node [block, below of=navigator, xshift=-1.5cm] (motors) {Motors};
@@ -52,12 +52,14 @@ The MD25 has 17 registers numbered 0 to 16 as follows:
 		16                & Command           & Write only          & Used for reset of encoder counts and module address changes      \\ \bottomrule
 	\end{tabular}
 	\caption{The MD25 register values and description}
+	\label{table:md25}
 \end{table}
 
 \newpage
-For controlling the motors, registers 0, 1 and 15 are used. Firstly, when initializing motor control, mode register (15) is modified.
+For controlling the motors, registers 0, 1 and 15 are used. Firstly, initializing motor control, mode register (15) is modified.
 The mode register selects which mode of operation and I2C data input type the user requires. Here the type 3 was chosen and writing this value 
 to the mode register makes enables turn mode: "speed1" controls both motors \textit{speed}, and "speed2" becomes the \textit{turn} value. 
+These two values correspond to the \textit{linear} and \textit{angular} respectively, which are provided by state machine.
 Data is in the range of -128 for full reverse, 0 for stop and 127 for full forward speed of motors.
 
 It is worth to mention, that turn mode looks at the speed register to decide if the direction is forward or reverse. Then it applies a subtraction or addition of the turn value on either motor. If the direction is forward:
@@ -78,18 +80,18 @@ else the direction is reverse:
 	\end{tabular}
 \end{table}
 
-Manipulating mentioned registers, 4 main motor controlling functions were implemented as seen in figure \ref{fig:motor_structure}.
+Manipulating mentioned registers, 4 main motor controlling functions were implemented as shown in figure \ref{fig:motor_structure}.
 \begin{figure}[!ht]
 	\centering
 	\begin{tikzpicture}[node distance = 2cm, auto]
 	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
 	text width=5em, text centered, rounded corners, minimum height=4em]
-	\tikzstyle{line} = [draw, -latex']
+	\tikzstyle{line} = [draw, -latex', line width =2pt]
 	% Place nodes
-	\node [block] (motors) {Motors};
-	\node [block, below of=navigator, xshift=-1.5cm] (stop) {Stop Motors};
+	\node [block,  fill=blue!40] (motors) {Motors};
+	\node [block, below of=motors, xshift=-1.5cm] (stop) {Stop Motors};
 	\node [block, left of=stop, node distance = 3 cm] (drive) {Drive Motors};
-	\node [block, below of=navigator, xshift=1.5cm] (left) {Turn left};
+	\node [block, below of=motors, xshift=1.5cm] (left) {Turn left};
 	\node [block, right of=left,  node distance = 3 cm] (right) {Turn right};
 	% Draw edges
 	\path [line] (motors) -| (drive);
@@ -97,25 +99,27 @@ Manipulating mentioned registers, 4 main motor controlling functions were implem
 	\path [line] (motors) -| (left);
 	\path [line] (motors) -| (right);
 	\end{tikzpicture}
-	\caption{Motor controlling functions}
+	\caption{Functions for controlling motors}
 	\label{fig:motor_structure}
 \end{figure}
 
+Main function is to drive motors was implemented by sending  \textit{linear} and \textit{angular} (i.e. \textit{speed} and \textit{turn}) values, while turn functions are only using angular speed to turn around the given direction. Finally, stopping function request zero linear and zero angular speeds.
+
 \paragraph{Controlling encoders}
 
-For controlling the encoders, registers 2-9 and 16 are used.
+For controlling the encoders, registers 2-9 and 16, listed in a table \ref{table:md25}, are used.
 Manipulating mentioned registers, 3 main encoder controlling functions were implemented, which are presented figure \ref{fig:encoder_structure}.
 \begin{figure}[!ht]
 	\centering
 	\begin{tikzpicture}[node distance = 2cm, auto]
 	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
 	text width=5em, text centered, rounded corners, minimum height=4em]
-	\tikzstyle{line} = [draw, -latex']
+	\tikzstyle{line} = [draw, -latex', line width =2pt]
 	% Place nodes
-	\node [block] (encoders) {Encoders};
-	\node [block, below of=navigator, xshift=-1.5cm] 	(rleft) {Read right encoder};
+	\node [block, fill=blue!40] (encoders) {Encoders};
+	\node [block, below of=encoders, xshift=-1.5cm] 	(rleft) {Read right encoder};
 	\node [block, left of=stop, node distance = 3 cm] 	(lleft) {Read left encoder};
-	\node [block, below of=navigator, xshift=1.5cm] 	(reset) {Reset both encoders};
+	\node [block, below of=encoders, xshift=1.5cm] 	(reset) {Reset both encoders};
 	\node [block, right of=left,  node distance = 3 cm] (angle) {Get robot heading};
 	% Draw edges
 	\path [line] (encoders) -| (rleft);
@@ -123,14 +127,11 @@ Manipulating mentioned registers, 3 main encoder controlling functions were impl
 	\path [line] (encoders) -| (reset);
 	\path [line] (encoders) -| (angle);
 	\end{tikzpicture}
-	\caption{Motor controlling functions}
+	\caption{Functions for manipulating encoders }
 	\label{fig:encoder_structure}
 \end{figure}
 
-
-\paragraph{Heading calculation}
-
-Robot heading calculation is implemented realising two formulas stated below.
+While getting values of encoders or resetting counts included only reading/sending the values from  I2C bus command register, robot \textit{heading} calculation is implemented realising two formulas stated in equations \ref{eq:rb_rad-pc}- \ref{eq:rb_heading},
 %$$
 %radiansPerCount = \pi* (wheelDiameter/trackWidth) / countsPerRevolution
 %$$
@@ -140,7 +141,9 @@ Robot heading calculation is implemented realising two formulas stated below.
 %$$ 
 
 \begin{eqnarray}
-rad_{pc}  = & \pi \cdot \frac{ d_{wheel} }{ d_{track} } / c_{pr}	,			\\
+rad_{pc}  = & \pi \cdot \frac{ d_{wheel} }{ d_{track} } / c_{pr}	,
+\label{eq:rb_rad-pc}
+\\
 \theta_{h} = & (ce_{r} - ce_{l} ) \cdot rad_{pc} ,
 \label{eq:rb_heading}
 \end{eqnarray}
@@ -213,3 +216,6 @@ equation \ref{eq:rb_heading} can be simplified and robot heading in degrees can 
 \end{align*}
 
 Having the left and right encoder counts, the latter equation enable to estimate wheeled robot's heading.
+\\
+As one knows, dead reckoning is subject to cumulative errors, however in our case, such system position tracking is not implemented. And long-time accumulative errors do not affect turning robot the requested angle, since not the actual accumulative encoder values are used, but only the difference between encoder counts before requesting an action and after.
+

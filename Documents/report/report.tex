@@ -21,7 +21,7 @@
 \bibliography{bibliography.bib}
 
 \usepackage{tikz}
-\usetikzlibrary{shapes,arrows}
+\usetikzlibrary{shapes,arrows, trees}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -60,7 +60,7 @@
 \begin{abstract}
 This project presents a small, easy to build low-cost robot system, that is able to find coloured signs on the floor and implement the associated actions, e.g. stop, turn, pause, etc.
 The robot hardware uses Raspberry Pi to control a set of motors, sensors and servo actuators. 
-Report provides information about done review the hardware design and implementation of software using open source tools as C++ and OpenCV libraries. 
+This report provides review of the hardware design and implementation of software using open source tools as C++ and OpenCV libraries. 
 \end{abstract}
 
 \section{Introduction}
@@ -75,16 +75,24 @@ Report provides information about done review the hardware design and implementa
 \section{State of the art}
 
 \input{parts/state_art.tex}
-
+ 
 \section{Project Management}
 
 \input{parts/donatas/section_project_management.tex}
 
 \section{Implementation}
-\clearpage
 \subsection{Overview}
 
 \input{parts/subsection_overview.tex}
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width=\textwidth]{robot.png}
+
+\caption{Overview of the robot's components}
+\label{fig:overview}
+\end{figure}
+
 
 \subsection{Hardware}
 
@@ -116,7 +124,7 @@ Report provides information about done review the hardware design and implementa
 \input{parts/section_issues}
 
 \section{Further improvements}
-
+\label{sec:future-improvements}
 
 \input{parts/igor/further-improvements.tex}
 

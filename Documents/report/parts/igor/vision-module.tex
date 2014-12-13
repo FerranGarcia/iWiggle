@@ -26,12 +26,35 @@ Three basic signs detected and recognized by the system are shown on figure \ref
 
 Basic workflow of the vision processing module is split into functional blocks, shown on the figure \ref{fig:vision-module-blocks}.
 
-\begin{figure}[th!]
+%\begin{figure}[th!]
+%	\centering
+%		\includegraphics[scale=0.5]{image-module.png}
+%	\caption{Workflow of vision module}
+%	\label{fig:vision-module-blocks}
+%\end{figure}
+
+\begin{figure}[!ht]
 	\centering
-		\includegraphics[scale=0.5]{image-module.png}
+	\begin{tikzpicture}[node distance = 2cm, auto]
+	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+	text width=5em, text centered, rounded corners, minimum height=4em]
+	\tikzstyle{line} = [draw, -latex', line width =2pt]
+	% Place nodes
+	\node [block] (ci) {Color image};
+	\node [block, right of=ci, node distance = 3 cm] (si) {Segmented image};
+	\node [block, right of=si, node distance = 3 cm] (os) {Object shape};
+	\node [block, right of=os, node distance = 3 cm] (sign) {Sign};
+	% Draw edges
+	\path [line] (ci) -- (si);
+	\path [line] (si) -- (os);
+	\path [line] (os) -- (sign);
+	\end{tikzpicture}
 	\caption{Workflow of vision module}
 	\label{fig:vision-module-blocks}
 \end{figure}
+
+
+
 
 Different methods and challenges encountered in vision module are described and discussed separately in the following chapters of the report.
 \paragraph{Inverse Perspective Mapping}
@@ -56,8 +79,6 @@ top view to the ground plane image. The IPM can be applied to all three planes o
 	\caption{Example of Inverse Perspective Mapping on a single colour image plane}
 	\label{fig:ipm_example}
 \end{figure}
-
-\newpage
 
 \paragraph{Thresholding}
 

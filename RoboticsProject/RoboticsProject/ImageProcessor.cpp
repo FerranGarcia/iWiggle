@@ -65,7 +65,7 @@ void ImageProcessor::getThresholdedImage(Mat *input, Mat* result) {
 void ImageProcessor::getThresholdedImageYCrCb(Mat *input, Mat* result) {
 
 	double threshConst = 0.6;
-	double erosion_size = 1;
+	double erosion_size = 0;
 
 	//???No need to resize image since we resizing input from PiCam
 	if ( (*input).cols > 320){
@@ -282,24 +282,36 @@ double ImageProcessor::getArrowAngleFitLine(vector<Point> *contour, Rect sign_lo
 }
 
 
-Mat ImageProcessor::getDefaultPerspectiveTransform()
+Mat ImageProcessor::getDefaultPerspectiveTransform(const double IMG_WIDTH, const double IMG_HEIGHT)
 {
 	Point2f source_points[4], dest_points[4];
-	int IMG_WIDTH = 320;
-	int IMG_HEIGHT = 240;
+
+	////top points
+	//source_points[0] = Point2f(0.0, 0.0);				//lu
+	//source_points[1] = Point2f(IMG_WIDTH, 0.0);		//ru
+	////bottom points
+	//source_points[2] = Point2f(IMG_WIDTH, IMG_HEIGHT);//rd
+	//source_points[3] = Point2f(0.0, IMG_HEIGHT);		//ld
+
+	////top points
+	//dest_points[0] = Point2f(0.0, 0.0);				//lu
+	//dest_points[1] = Point2f(IMG_WIDTH, 0.0);		//ru
+	////bottom points
+	//dest_points[2] = Point2f(IMG_WIDTH, IMG_HEIGHT);//rd
+	//dest_points[3] = Point2f(0.0, IMG_HEIGHT);		//ld
 
 	//top points
-	source_points[0] = Point2f(0.0, 0.0);
-	source_points[1] = Point2f(IMG_WIDTH, 0.0);
+	source_points[0] = Point2f(IMG_WIDTH*0.15, IMG_HEIGHT*0.15);		//lu
+	source_points[1] = Point2f(IMG_WIDTH*(1-0.15), IMG_HEIGHT*0.15);	//ru
 	//bottom points
-	source_points[2] = Point2f(IMG_WIDTH, IMG_HEIGHT);
-	source_points[3] = Point2f(0.0, IMG_HEIGHT);
+	source_points[2] = Point2f(IMG_WIDTH, IMG_HEIGHT); //rd
+	source_points[3] = Point2f(0.0, IMG_HEIGHT);		//ld
 
 	//top points
 	dest_points[0] = Point2f(0.0, 0.0);
 	dest_points[1] = Point2f(IMG_WIDTH, 0.0);
 	//bottom points
-	dest_points[2] = Point2f(IMG_WIDTH - 0.0, IMG_HEIGHT);
+	dest_points[2] = Point2f(IMG_WIDTH, IMG_HEIGHT);
 	dest_points[3] = Point2f(0, IMG_HEIGHT);
 
 	Mat transform_matrix;
