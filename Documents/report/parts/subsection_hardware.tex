@@ -1,37 +1,74 @@
 The list of robot's main hardware components:
 
 \begin{itemize}
-  \item Raspberry Pi Model B Board
+  \item Raspberry Pi Model B Board (see Fig. \ref{fig:rpi_board})
   \item Raspberry Pi No-IR Camera
-  \item 2xEMG30 12v motor with encoder and 30:1 gearbox + mounting bracket
+  \item RD02 Robot drive system
   \item Ultrasound Proximity sensor
   \item I2C Breakout Board
 \end{itemize}
 
-Insert images of the components (?).
+\begin{figure}[h!]
+\centering 
 
-\paragraph{Mechanical Part}
+	\begin{subfigure}[h]{0.45\textwidth}
+		\centering
+			\includegraphics[width=\textwidth]{rpi.png}
+			\subcaption{Raspberry Pi Model B board}
+			\label{fig:rpi_board}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.45\textwidth}
+		\centering
+			\includegraphics[width=\textwidth]{noir.png}
+			\subcaption{Raspberry pi NoIR camera module}
+			\label{fig:rpi_noir}
+	\end{subfigure}
 
-The robot is built on a metal frame with two driving wheels mounted on a EMG30
-gearbox connected to the frame using the gearbox bracket. A metal ball wheel
-located in front of the robot provides additional support. The frame consists of
-metal profiles with a perforated plate that serves as a base for mounting
-electronic components.
+\caption{Raspberry Pi and NoIR camera}
+\label{fig:rpi}
+\end{figure}
 
-EMG30 is a module that incorporates motor, gearbox and encoder with Hall sensor
-and suited for medium robotics applications. The gearbox provides increased
+\subsection*{Mechanical Part} 
+
+The robot drive unit RD02 used in this project consists of MD25 motor control
+board, two EMG30 modules (motor, gearbox and a mounting bracket) and two 100mm
+wheels (see Fig. \ref{fig:rd02}).
+
+The frame of the robot consists of aluminum profiles and a perforated plate that
+serves as a base for mounting electronic components. Two driving wheels
+are mounted on a EMG30 gearbox shaft that connected to the frame via the
+provided bracket. A metal ball wheel is located in front of the robot and
+provides remaining support.
+
+EMG30 is a module that incorporates motor, gearbox and encoder with Hall sensor.
+It is suited for medium robotics applications. The gearbox provides increased
 torque allowing robust movement in different environments while the Hall sensor
-obtains information about the rotation of the shaft. (Include a reference to
-the EMG30).
+obtains information about the rotation of the shaft.
 
+\begin{figure}[h!]
+\centering 
 
+	\begin{subfigure}[h]{0.45\textwidth}
+		\centering
+			\includegraphics[width=\textwidth]{rd02.png}
+			\subcaption{RD02 Robot Drive System}
+			\label{fig:rd02}
+	\end{subfigure}
+	\begin{subfigure}[h]{0.45\textwidth}
+		\centering 
+			\includegraphics[width=\textwidth]{lcd.png}
+			\subcaption{20x4 LCD Module and ultrasonic range sensor}
+			\label{fig:lcd_us}
+	\end{subfigure}
 
+\caption{RD02 Robot Drive System}
+\label{fig:modules}
+\end{figure}
+
+\subsection*{Electronics}
  
-
-\paragraph{Electronics}
-
-The main electronic component of the robot is the Raspberry Pi single-board
-computer. Its technical specifications are listed in the Table
+The main electronic component of the robot is the Raspberry Pi Model
+B single-board computer. Its technical specifications are listed in the Table
 \ref{tab:rpi_specs}.
 
 \begin{table}[h!]
@@ -52,26 +89,29 @@ computer. Its technical specifications are listed in the Table
     \label{tab:rpi_specs}
 \end{table}
 
+The board is running an adapted version of the Debian Linux distribution. The
+development can either be performed on the board itself after connecting the
+necessary peripherals, or via remote connection such as SSH.
 
 The board is powered using 11.1V Turnigy LiPo Battery via power adapter that
 splits the voltage into 12V (motors) and 5V lines. According to the external
 power supply measurements, the average total consumption during movement is
-(insert here).
+approximately 8W.
 
-The Raspberry Pi peripherals include a WiFi adapter, GPIO Breakout board for
-simplifying connection, and a Raspberry Pi camera. RPi camera is a
-board-specific 5Mp camera module connected via 15-pin MIPI (Mobile Industry
+The Raspberry Pi peripherals include a WiFi adapter, GPIO breakout board for
+simplifying the connection of other modules, and a Raspberry Pi camera (see
+Fig. \ref{fig:rpi_noir}).
+RPi camera is a board-specific 5Mp camera module connected via 15-pin MIPI (Mobile Industry
 Processor Interface) connector. It is capable of capturing 1080p video and
 perform basic hardware video processing. Two different types of cameras were
-tested - standard camera and near-IR ``NoIR'' camera with the absence of
-infrared filter. The performance of these cameras compared to standard USB
-Webcam is shown in the Table \ref{tab:cam_perf}. In order to
-increase the reliability and robustness of NoIR camera, a couple of IR LEDs were
-installed to provide additional illumination.
+tested - standard camera and near-IR ``NoIR'' camera with the infrared filter
+removed.
+The performance comparison of different cameras is shown in the Table
+\ref{tab:cam_perf}.  In order to increase the reliability and robustness of 
+NoIR camera, a couple of IR LEDs were installed to provide additional illumination.
 
-Talk about sign design for the near-IR camera here.
-After a series of experiments, a highly-reflective duct tape was chosen as a
-material for the signs. It showed high reflectance under poor lighting
+After a series of experiments, the signs were made of a highly-reflective duct
+tape that showed high reflectance under poor lighting
 conditions. The usage of the NoIR camera accompanied with a couple of IR LEDs
 showed high segmentation performance with minimum lighting provided.
 
@@ -83,14 +123,8 @@ with encoder feedback. It is also equipped with a 5V regulator, however it is
 impossible to power the Raspberry Pi as the continuous supply rate is 300 mA,
 while the average consumption of Raspberry Pi is 700 mA.
 
-Put the reference.
-\url{http://www.pishrobot.com/files/products/datasheets/md25.pdf}
-
 Due to the reason explained before, Raspberry Pi is powered using Taco Power TSR
 1-2450 DC-DC voltage step-down modules that provide 5V 1A output.
-
-Put the reference.
-\url{http://www.adafruit.com/datasheets/tsr1.pdf}
 
 % Fix table here
 \begin{table}[h!]
@@ -113,11 +147,10 @@ RPi camera is its performance - it outperforms generic Webcam grace to hardware
 optimization and, in particular, absence of resizing routine in the code.
 However, the disadvantage lies in the specificity of the camera, that can only
 be used on the RPi board, while the USB Webcam can be used everywhere, so in
-order to port the code to another platform, the camera change as well as some
-code modification are required.
+order to port the solution to another platform, the camera change as well as
+ code modification are required.
 
 The robot is also equipped with an ultrasound proximity sensor used for obstacle
 detection. It is a basic proximity sensor with a focus of 15 degrees and an
-accuracy about 2mm. 
-
-An I2C LCD Screen module provides an interface for visual feedback.
+accuracy about 2mm. An I2C LCD Screen module provides an interface for visual feedback.
+These components are shown on the Fig. \ref{fig:lcd_us0}.
