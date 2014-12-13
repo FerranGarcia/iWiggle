@@ -13,7 +13,62 @@ The second group, as said above, tries to improve the experience of the children
 
 In this subsection the results obtained during the different tests will be presented. Some comparison with old and new methods will be reviewed in order to see the improvements done and the performance of the current program. 
 
-One of the first things that was implemented in the \textit{vision module} was the angle detection of the arrow. As explained in previous sections firstly it was using the center of mass of the contour and the center of the rectangle in order to get the angle. This method had a lot of error and it was producing a deviation of $\pm 20º$ according to the real value. Also the angle computed was changing very fast in this range and it was difficult to obtain a clear measure. In order to improve that a new method was designed which fit a line along the arrow. This solution is really easy to implement and the results shows that the deviation is only $\pm 3º$ with respects of the real value. With this little improvement the performance of the angle detection gets increased, thus the turns of the robot are much precise with the direction pointed by the arrow.
+One of the first things that was implemented in the \textit{vision module} was the angle detection of the arrow. As explained in previous sections firstly it was using the center of mass of the contour and the center of the rectangle in order to get the angle. This method had a lot of error and it was producing a deviation of $\pm 20º$ according to the real value. Also the angle computed was changing very fast in this range and it was difficult to obtain a clear measure. In order to improve that a new method was designed which fit a line along the arrow. This solution is really easy to implement and the results shows that the deviation is only $\pm 3º$ with respects of the real value. With this little improvement the performance of the angle detection gets increased, thus the turns of the robot are much precise with the direction pointed by the arrow. Figure \ref{fig:angle} represents this improvement in a visual way.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+  \begin{axis}[
+        xtick={},
+        xticklabels={},
+        ytick={},
+        yticklabels={},
+        axis lines = middle,
+        ymin=-3, ymax=3,
+        xmin=2, xmax=4,
+      axis equal]
+      
+      \addplot[black,sharp plot,update limits=false, ->] 
+      			coordinates {(0,0) (4,2)}
+      			node[above] at (axis cs:2.7,0.3) {$+20º$}
+				node[above] at (axis cs:2.7,-0.8) {$-20º$};
+      	
+      \addplot[black,sharp plot,update limits=false, ->] 
+        		coordinates {(0,0) (4,-2)};
+
+        
+      \draw (axis cs:2,-1)arc[radius=2cm,start angle=-30,end angle=27];
+
+    \end{axis}
+\end{tikzpicture}
+\begin{tikzpicture}
+  \begin{axis}[
+        xtick={},
+        xticklabels={},
+        ytick={},
+        yticklabels={},
+        axis lines = middle,
+        axis line style={->},
+        ymin=-3, ymax=3,
+        xmin=2, xmax=4,
+      axis equal]
+      
+      \addplot[black,sharp plot,update limits=false, ->] 
+      			coordinates {(0,0) (4,0.5)}
+      			node[above] at (axis cs:2.7,0.3) {$+3º$}
+				node[above] at (axis cs:2.7,-0.9) {$-3º$};
+      	
+      \addplot[black,sharp plot,update limits=false, ->] 
+        		coordinates {(0,0) (4,-0.5)};
+
+        
+      \draw (axis cs:2,-0.25)arc[radius=2cm,start angle=-8,end angle=5.8];
+
+    \end{axis}
+\end{tikzpicture}
+\caption{Comparison between the two methods studied for computing the angle of the arrow. In the left the old method is giving $\pm 20º$ while the new method reduces substantially the error.}
+\label{fig:angle}
+\end{figure}
 
 One of the biggest problems is the classification of the signs. This is probably one of the points that should be improved if future work is done in the robot. In the current setting the robot is able to distinguish easily between the cross and the circle because of the \textit{fill ratio}. However the arrow is more difficult to detect leading up to a $20\%$ of \textit{false negatives}. This means that every five times and arrow is shown to the robot one is classified as another sign. This result may vary depending on the lighting conditions although the IR signals can avoid loosing precision in low light conditions. The lack of accuracy of the center of mass and center of rectangle method is leading to this \textit{false negatives} because sometimes this two points are not split enough and the sign is not classified as an arrow. Probably getting some information about the shape of the bounding box would help in order to improve the arrow detection.
 
