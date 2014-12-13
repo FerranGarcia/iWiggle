@@ -1,5 +1,5 @@
 This module connects desired action behaviour via the control of  robot wheels. Since designed robot uses
-Dual 12Volt 2.8Amp H Bridge Motor Drive MD25 \footnote{\url{http://www.robot-electronics.co.uk/htm/md25i2c.htm}} board, controlling the wheels was accomplished using I2C bus system mode.
+Dual 12Volt 2.8Amp H Bridge Motor Drive MD25 \footnote{\url{http://www.robot-electronics.co.uk/htm/md25i2c.htm}} board, controlling the wheels was accomplished using $I^2C$ bus system mode.
 Generally this module had to realize following actions:
 \begin{itemize}
 	\item drive motors by setting individual speeds for both wheels;
@@ -27,7 +27,7 @@ These requirements led to splitting the whole module into two blocks:  one being
 
 \paragraph{Controlling motors}
 
-All communications between high level functions and motors were realized via  I2C bus command register.
+All communications between high level functions and motors were realized via  $I^2C$ bus command register.
 The MD25 has 17 registers numbered 0 to 16 as follows:
 \begin{table}[!h]
 	\begin{tabular}{@{}llll@{}}
@@ -57,7 +57,7 @@ The MD25 has 17 registers numbered 0 to 16 as follows:
 
 \newpage
 For controlling the motors, registers 0, 1 and 15 are used. Firstly, initializing motor control, mode register (15) is modified.
-The mode register selects which mode of operation and I2C data input type the user requires. Here the type 3 was chosen and writing this value 
+The mode register selects which mode of operation and $I^2C$ data input type the user requires. Here the type 3 was chosen and writing this value 
 to the mode register makes enables turn mode: "speed1" controls both motors \textit{speed}, and "speed2" becomes the \textit{turn} value. 
 These two values correspond to the \textit{linear} and \textit{angular} respectively, which are provided by state machine.
 Data is in the range of -128 for full reverse, 0 for stop and 127 for full forward speed of motors.
@@ -131,7 +131,7 @@ Manipulating mentioned registers, 3 main encoder controlling functions were impl
 	\label{fig:encoder_structure}
 \end{figure}
 
-While getting values of encoders or resetting counts included only reading/sending the values from  I2C bus command register, robot \textit{heading} calculation is implemented realising two formulas stated in equations \ref{eq:rb_rad-pc}- \ref{eq:rb_heading},
+While getting values of encoders or resetting counts included only reading/sending the values from  $I^2C$ bus command register, robot \textit{heading} calculation is implemented realising two formulas stated in equations \ref{eq:rb_rad-pc}- \ref{eq:rb_heading},
 %$$
 %radiansPerCount = \pi* (wheelDiameter/trackWidth) / countsPerRevolution
 %$$

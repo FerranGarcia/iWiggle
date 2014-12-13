@@ -1,9 +1,9 @@
 
-One of the the most common and intuitive approaches for implementation of software controller for hardware system is state-machine approach. It is fairly simple concept, with only couple of important things to keep in mind. 
+One of the most common and intuitive approaches for implementation of software controller for hardware system is state-machine approach. It is fairly simple concept, with only a couple of important considerations.
 
-System controlled by state machine has certain number of possible, unique and well defined states that it can be in at every moment of execution. State defines the behavior of the system in every discrete moment of time, including three important aspects: sensor data acquisition, output behavior computation and state transition check. In other words, every state has it\rq{}s own logic for doing all of these three mentioned steps, which gives a lot of variability for possible control scenarios. It\rq{}s worth of mentioning that some states might skip certain steps or perform some steps more than once without state transition check, for example.
+System controlled by state machine has certain number of possible, unique and well defined states that it can be in at every moment of execution. State defines the behaviour of the system in every discrete moment of time, including three important aspects: sensor data acquisition, output behaviour computation and state transition check. In other words, every state has it is own logic for doing all of these three mentioned steps, which gives a lot of variability for possible control scenarios. It is worth mentioning that some states might skip certain steps or perform some steps more than once without state transition check, for example.
 
-\paragraph{Possible system states}
+\paragraph{System states}
 
 At any moment of time robot can be in one of the following state:
 
@@ -22,11 +22,11 @@ At any moment of time robot can be in one of the following state:
 
 \textbf{APPROACHING\_SIGN} state moves the robot close to the sign it has seen in the previous state. It does this by setting the linear speed to constant value and adjusting angular speed all the time based on the horizontal position of the target sign in the view. Robot will move in the direction needed to align the sign to the center of the screen, and it will do that proportionally to the distance of the target to the center.
 
-\textbf{EXECUTING\_COMMAND} state has different behavior depending on the type of the sign that was seen in the state before. If it was goal sign, it will switch to the GAME\_OVER state and the game will end. If it was stop sign, robot will just wait for certain predefined timeout (5 seconds) and switch to state MARCHING\_FORWARD.
+\textbf{EXECUTING\_COMMAND} state has different behavior depending on the type of the sign that was seen in the state before. If it was goal sign, it will switch to the GAME\_OVER state and the game will end. If it was stop sign, robot will just wait for certain predefined time-out (5 seconds) and switch to state MARCHING\_FORWARD. If it was the arrow sign, robot will turn desired angle and switch switch to state MARCHING\_FORWARD.
 
 \textbf{MARCHING\_FORWARD} state sets the linear speed to constant and angular to zero. In this state robot constantly monitors camera image stream and can potentially switch to APPROACHING\_SIGN state once a sign is detected in perceptive area of the image.
 
-\textbf{GAME\_OVER} state is entered after goal sign is approached. After displaching notification about game completion (through audio and visual feedback), robot remains idle until hardware button is pressed for the start of the new game.
+\textbf{GAME\_OVER} state is entered after goal sign is approached. After displacing notification about game completion (through audio and visual feedback), robot remains idle until hardware button is pressed for the start of the new game.
 
 \begin{figure}[th!]
 	\centering

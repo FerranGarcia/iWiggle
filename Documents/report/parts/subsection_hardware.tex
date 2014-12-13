@@ -1,23 +1,24 @@
-The list of robot's main hardware components:
+The list of robot's main hardware components is as follows:
 
 \begin{itemize}
   \item Raspberry Pi Model B Board (see Fig. \ref{fig:rpi_board})
   \item Raspberry Pi No-IR Camera
   \item RD02 Robot drive system
   \item Ultrasound Proximity sensor
-  \item I2C Breakout Board
+  \item $I^2C$ Breakout Board
+  \item LCD screen
 \end{itemize}
 
 \begin{figure}[h!]
 \centering 
 
-	\begin{subfigure}[h]{0.45\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\centering
 			\includegraphics[width=\textwidth]{rpi.png}
 			\subcaption{Raspberry Pi Model B board}
 			\label{fig:rpi_board}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.45\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\centering
 			\includegraphics[width=\textwidth]{noir.png}
 			\subcaption{Raspberry pi NoIR camera module}
@@ -28,7 +29,7 @@ The list of robot's main hardware components:
 \label{fig:rpi}
 \end{figure}
 
-\subsection*{Mechanical Part} 
+\subsubsection{Mechanical Part} 
 
 The robot drive unit RD02 used in this project consists of MD25 motor control
 board, two EMG30 modules (motor, gearbox and a mounting bracket) and two 100mm
@@ -48,13 +49,13 @@ obtains information about the rotation of the shaft.
 \begin{figure}[h!]
 \centering 
 
-	\begin{subfigure}[h]{0.45\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\centering
 			\includegraphics[width=\textwidth]{rd02.png}
 			\subcaption{RD02 Robot Drive System}
 			\label{fig:rd02}
 	\end{subfigure}
-	\begin{subfigure}[h]{0.45\textwidth}
+	\begin{subfigure}[h]{0.35\textwidth}
 		\centering 
 			\includegraphics[width=\textwidth]{lcd.png}
 			\subcaption{20x4 LCD Module and ultrasonic range sensor}
@@ -65,7 +66,7 @@ obtains information about the rotation of the shaft.
 \label{fig:modules}
 \end{figure}
 
-\subsection*{Electronics}
+\subsubsection{Electronics}
  
 The main electronic component of the robot is the Raspberry Pi Model
 B single-board computer. Its technical specifications are listed in the Table
@@ -74,16 +75,15 @@ B single-board computer. Its technical specifications are listed in the Table
 \begin{table}[h!]
 	\setlength\extrarowheight{2pt}
     \begin{tabularx}{\textwidth}{XX}
-    
-    ~                 & ~                                                           \\
-    System on a chip  & Broadcom BCM2835                                            \\
-    CPU               & 700 MHz ARM11                                               \\
-    GPU               & Broadcom VideoCore IV @ 250 MHz                             \\
-    RAM               & 512 Mb shared with GPU                                      \\
-    Memory            & SD Card Slot                                                \\
-    Ports             & 2x USB, LAN, 3.5mm phone jack, HDMI,  GPIO (UART, I2C, SPI) \\
-    Power Consumption & 700 mA (3.5 W)                                              \\
-    
+   	\toprule
+	    \textbf{System on a chip}  & Broadcom BCM2835                                            \\
+	    \textbf{CPU  }             & 700 MHz ARM11                                               \\
+	    \textbf{GPU}               & Broadcom VideoCore IV @ 250 MHz                             \\
+	    \textbf{RAM}               & 512 Mb shared with GPU                                      \\
+	    \textbf{Memory}            & SD Card Slot                                                \\
+	    \textbf{Ports}             & 2x USB, LAN, 3.5mm phone jack, HDMI,  GPIO (UART, $I^2C$, SPI) \\
+	    \textbf{Power Consumption} & 700 mA (3.5 W)                                              \\
+    \bottomrule
     \end{tabularx}
     \caption{Raspberry Pi Model B Specifications}
     \label{tab:rpi_specs}
@@ -115,7 +115,7 @@ tape that showed high reflectance under poor lighting
 conditions. The usage of the NoIR camera accompanied with a couple of IR LEDs
 showed high segmentation performance with minimum lighting provided.
 
-MD25 is a dual H-Bridge I2C / Serial motor driver suited for the control of
+MD25 is a dual H-Bridge $I^2C$ / Serial motor driver suited for the control of
 EMG30 modules.
 It provides additional capabilities in the motor manipulation, such as variable
 acceleration, motor current information and independent control of two motors
@@ -131,12 +131,16 @@ Due to the reason explained before, Raspberry Pi is powered using Taco Power TSR
 	\setlength\extrarowheight{2pt}
 	\setlength\arraycolsep{5pt}
     \begin{tabularx}{\textwidth}{XXXX}
-    Resolution / Camera Setup & Raspberry Pi  (CPU) + Raspberry Pi Camera &
-    Raspberry Pi (CPU) + Logitech C270 & Odroid-U3 (CPU) + Logitech C270 \\
-    160x120            & 18           & 9          & 30         \\
-    320x240            & 6            & 4.8        & 20         \\
-    640x480            & 2.5          & 2.3        & 11         \\
-    1280x720           & 0.6          & 0.8        & 4          \\
+    	\toprule
+    	\bf
+	    Resolution / Camera Setup & \bf Raspberry Pi (CPU) + Raspberry Pi Camera & \bf 
+	    Raspberry Pi (CPU) + Logitech C270 & \bf  Odroid-U3 (CPU) + Logitech C270 \\
+	    \hline
+	    160x120            & 18           & 9          & 30         \\
+	    320x240            & 6            & 4.8        & 20         \\
+	    640x480            & 2.5          & 2.3        & 11         \\
+	    1280x720           & 0.6          & 0.8        & 4          \\
+	    \bottomrule
     \end{tabularx}
     \caption{Camera Performance comparison}
     \label{tab:cam_perf}
@@ -152,5 +156,5 @@ order to port the solution to another platform, the camera change as well as
 
 The robot is also equipped with an ultrasound proximity sensor used for obstacle
 detection. It is a basic proximity sensor with a focus of 15 degrees and an
-accuracy about 2mm. An I2C LCD Screen module provides an interface for visual feedback.
-These components are shown on the Fig. \ref{fig:lcd_us0}.
+accuracy about 2mm. An $I^2C$ LCD Screen module provides an interface for visual feedback.
+These components are shown on the figure \ref{fig:lcd_us}.
