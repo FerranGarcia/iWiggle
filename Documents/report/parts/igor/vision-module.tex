@@ -24,7 +24,7 @@ Three basic signs detected and recognized by the system are shown on figure \ref
 	\label{fig:raw-signs}
 \end{figure}
 
-Basic workflow of the vision processing module is split into functional blocks, shown on the figure \ref{fig:vision-module-blocks}.
+The basic workflow of the vision processing module is split into functional blocks, shown on the figure \ref{fig:vision-module-blocks}.
 
 %\begin{figure}[th!]
 %	\centering
@@ -59,7 +59,7 @@ Basic workflow of the vision processing module is split into functional blocks, 
 Different methods and challenges encountered in vision module are described and discussed separately in the following chapters of the report.
 \paragraph{Inverse Perspective Mapping}
 
-In this project, a single camera mounted in the front of the robot with small tilting angle is used to capture the images. Since object of interest are found on a ground plane, before applying any image recognition and classification methods, it is common-sense to process obtained camera images using Inverse Perspective Mapping (IPM).
+In this project, a single camera mounted in the front of the robot with small tilting angle is used to capture the images. Since objects of interest are found on a ground plane, before applying any image recognition and classification methods, it is common-sense to process obtained camera images using Inverse Perspective Mapping (IPM).
 Knowing that camera tilting angle and position on the robot is fixed, this transform is just a  plane-to-plane homography to convert the perspective image to
 top view to the ground plane image. The IPM can be applied to all three planes of colour image separately or only on selected colour plane. Example of the transform can be seen in figure \ref{fig:ipm_example}.
 \begin{figure}[!ht]
@@ -147,25 +147,27 @@ For an arbitrary binary (i.e. thresholded) input image system can compute statis
 	\label{fig:statistical-moments}
 \end{figure}
 
-Figure \ref{fig:statistical-moments} demonstrates intuition behind visual cues used for discrimination of three different types of signs. By computing the distance of center of the mass (green rectangle) and center of the cropped image segment where the sign was detected (blue rectangle) we can perform initial discrimination between \textbf{arrow} and \textbf{rest two signs}. Distance is going to be close to zero in case of cross and circle since object are symmetrical around two mutually normal axes. Arrow is not symmetrical around one axis, so it's center of the mass will be slightly shifter towards the tip of the arrow and this is the property used to distinguish an arrow from the circle and cross.
+Figure \ref{fig:statistical-moments} demonstrates intuition behind visual cues used for discrimination of three different types of signs. By computing the distance of center of the mass (green rectangle) and center of the cropped image segment where the sign was detected (blue rectangle) we can perform initial discrimination between \textit{arrow} and \textit{rest two signs}. Distance is going to be close to zero in case of cross and circle since object are symmetrical around two mutually normal axes. Arrow is not symmetrical around one axis, so it's center of the mass will be slightly shifter towards the tip of the arrow and this is the property used to distinguish an arrow from the circle and cross.
 Table \ref{tab:moments} shows average distance of center of the mass from image center proportional to cropped image size. Clear observation is that thresholding this distance to 10 $\%$ can give is pretty good estimate of probability that sign belongs to arrow class.
 
-If this distance is close to zero, additional step is needed to determine is the observed sign cross or circle. Approach used in this step was investigation of zero-order moment, which gives the number of white pixels in the image. By taking the ratio of zero order moment and total number of pixels of sign area, we can distinguish between cross and circle. Intuition behind this metric lies in the fact that circle has bigger surface than cross of the same bounding box size, so the percentage of space it occupies in the cropped image area where the sign is going to be larger than if it was cross. Table \ref{tab:moments} gives suitable value of threshold of 70 $\%$.
+If this distance is close to zero, additional step is needed to determine if the observed sign is cross or circle. Approach used in this step was investigation of zero-order moment, which gives the number of white pixels in the image. By taking the ratio of zero order moment and total number of pixels of sign area, we can distinguish between cross and circle. Intuition behind this metric lies in the fact that circle has bigger surface than cross of the same bounding box size, so the percentage of space it occupies in the cropped image area where the sign is going to be larger than if it was cross. Table \ref{tab:moments} gives suitable value of threshold of 70 $\%$.
 
 \begin{table}[th!]
 \centering
-\begin{tabular}{l*{2}{c}r}
-	Sign class			& Distance of first moment & Ratio of second order moment  \\
-	\hline
-	Arrow 				& 18.41 & 56.44  \\
-	Cross            	& 1.39 & 54.20  \\
-	Circle           	& 0.97 & 89.63  \\
-\end{tabular}
-\caption{Numerical values of statistical moments given in $\%$ wrt. image size}
+	\begin{tabular}{l*{2}{c}r}
+		\toprule
+		Sign class			& Distance of first moment & Ratio of second order moment  \\
+		\hline
+		Arrow 				& 18.41 & 56.44  \\
+		Cross            	& 1.39 & 54.20  \\
+		Circle           	& 0.97 & 89.63  \\
+		\bottomrule
+	\end{tabular}
+\caption{Numerical values of statistical moments \\given in percentage with respect to image size}
 \label{tab:moments}
 \end{table}
 
-Described method proved to be sufficiently accurate for practical purposes, while still remaining \textbf{computationally tractable} on available hardware. More robust classification methods will be discussed in section \ref{sec:future-improvements} and are subject to future investigation.
+Described method proved to be sufficiently accurate for practical purposes, while still remaining \textit{computationally tractable} on available hardware. More robust classification methods will be discussed in section \ref{sec:future-improvements} and are subject to future investigation.
 
 \paragraph{Neural network classifier}
 
@@ -189,32 +191,33 @@ Initial idea was to use already computed information about the statistical momen
 	\centering
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
-		\includegraphics[scale=0.7]{moments-arrow-raw.png}
+		\includegraphics[width = 1\textwidth]{moments-arrow-raw.png}
 		\subcaption{Raw camera input}
 	\end{subfigure}
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
-		\includegraphics[scale=1]{moments-arrow-segm-angle.png}
+		\includegraphics[width = 1\textwidth]{moments-arrow-segm-angle.png}
 		\subcaption{Arrow}
 	\end{subfigure}
-		\begin{subfigure}[b]{0.45\textwidth}
-			\centering
-			\includegraphics[scale=0.7]{moments-arrow-segm-angle-math.png}
-			\subcaption{Angle from moments}
-		\end{subfigure}
-		\begin{subfigure}[b]{0.45\textwidth}
-			\centering
-			\includegraphics[scale=0.55]{moments-arrow-segm-angle-fitting.png}
-			\subcaption{Line fitting}
-			\label{fig:line-fitting}
-		\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width = 1\textwidth]{moments-arrow-segm-angle-math.png}
+		\subcaption{Angle from moments}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width = 1\textwidth]{moments-arrow-segm-angle-fitting.png}
+		\subcaption{Line fitting}
+		\label{fig:line-fitting}
+	\end{subfigure}
 	\caption{Computation of the arrow orientation}
 	\label{fig:arrow-angle-computation}
 \end{figure}
 
-After implementation and extensive testing of mentioned method, some scenarios where it fails were met. One of them is shown in the figure , where wrong value of the angle is computed or it wasn't reliable enough (it was oscillating a lot). Oscillation problem could have been solved by filtering, but instead a different approach was chosen.
+After implementation and extensive testing of mentioned method, some scenarios where it fails were met. One of them is shown in the figure, where wrong value of the angle is computed or it was not reliable enough (it was oscillating a lot). Oscillation problem could have been solved by filtering, but instead a different approach was chosen.
 
-Instead of focusing on statistical properties of the contour of the arrow better approach is to utilize the whole information about it's contour. Contour of the arrow shape is extracted from segmented binary image of the arrow. Array of points representing the contour is then fitted to the line in \textbf{Linear Least Squares fashion (LLS)}, which is a well known function minimization framework for linear systems.
+Instead of focusing on statistical properties of the contour of the arrow better approach is to use the whole information about it's contour. Contour of the arrow shape is extracted from segmented binary image of the arrow. Array of points representing the contour is then fitted to the line in \textit{Linear Least Squares fashion (LLS)}, which is a well known function minimization framework for linear systems.
 
 The basic idea is posing the problem of finding unknown arrow angle $\theta$ as function minimization problem, where input is defined as set $C$ of $N$ contour points $C_i \in \mathbb{R}^2$. Cost function on a set of points $C$ and chosen angle $\theta$ is defined as sum of the squared distance of each contour point $C_i$ from the line with angle $\theta$, which is formally given by equation \ref{eq:LLS}. Minimizing this function over $\theta$ gives the optimal line angle that fits the given contour points.
 
@@ -225,7 +228,7 @@ f(C,\theta)=
 \label{eq:LLS}
 \end{equation}
 
-Figure \ref{fig:line-fitting} shows two arbitrary lines on top of the segmented image of the arrow. Blue line has higher value of the cost function than the red line because it doesn't fit the given data (contour points) the best possible way. Red line is the optimal angle for given shape, determined by least square solution of the equation \ref{eq:LLS}.
+Figure \ref{fig:line-fitting} shows two arbitrary lines on top of the segmented image of the arrow. Blue line has higher value of the cost function than the red line because it does not fit the given data (contour points) the best possible way. Red line is the optimal angle for given shape, determined by least square solution of the equation \ref{eq:LLS}.
 
 OpenCV has LLS implementation of described line fitting algorithm, which was used in the final version of the solution. Using this method improved the accuracy and stability of orientation of the arrow without significant impact on performance, since optimization problem can be solved using techniques linear algebra, which are computationally inexpensive.
 
@@ -233,17 +236,17 @@ OpenCV has LLS implementation of described line fitting algorithm, which was use
 
 Problem of partial occlusion arises when robot is moving forward and a sign is slowly getting into the area observed by robot. Some time is needed before the sign completely enters the view and attempt of classification partially visible sign would result in misclassification in most of te cases.
 
-Also, there is a problem of detecting proximity of the robot to the observed sign, because desired behavior is to switch states only when the robot is close to sign it detects and not as soon it detects it.
+Also, there is a problem of detecting proximity of the robot to the observed sign. The desired behaviour is to switch states only when the robot is close enough to detect the sign and not as soon as detects it.
 
-In order to prevent attempts of classifications of partially visible signs and detecting proximity of the robot to the sign, whole view of the camera is split into two regions of interest: \textbf{perceptive area} and \textbf{proximity area}, shown on figure \ref{fig:camera-view-areas}. Using these view areas system is able to overcome the described problems in very easy and intuitive way.
+In order to prevent attempts of classifications of partially visible signs and detecting proximity of the robot with respect to the sign, the whole view of the camera is split into two regions of interest: \textit{perceptive area} and \textit{proximity area} as shown on figure \ref{fig:camera-view-areas}. Using these view areas, the system is able to overcome the described problems in very easy and intuitive way.
 
 \begin{figure}[th!]
 	\centering
-		\includegraphics[scale=0.5]{thresholding-raw.png}
+		\includegraphics[scale=0.8]{thresholding-raw.png}
 	\caption{Perceptive (green) and proximity (red) area}
 	\label{fig:camera-view-areas}
 \end{figure}
 
-Detection of the sign (segmentation and blob detection) are performed at every iteration and position of the object is extracted as center of the detected blob. For predefined camera position and physical size of the signs, it can be assumed that \textbf{if object's center is inside the perception area it will be completely inside the camera view}. This allows reliable determination of exact classification moment, without risk of classifying partially visible objects.
+Detection of the sign (segmentation and blob detection) is performed at every iteration and position of the object is extracted as center of the detected blob. For predefined camera position and physical size of the signs, it can be assumed that \textit{if object's center is inside the perception area it will be completely inside the camera view}. This allows a reliable determination of the exact classification moment, without any risk of classifying partially visible objects.
 
-Similar strategy is used for detecting the proximity of the sign: if it's center is in the proximity area it is assumed to be close to the robot. Since slightly delayed image processing and low FPS, it will take some time for robot to determine that it approached the sign. This will result in robot ending up exactly on the sign at the moment when it switches to execution of the command defined by the sign.
+Similar strategy is used for detecting the proximity of the sign: if its center is in the proximity area it is assumed to be close to the robot. Since the system faces slightly delayed image processing and low FPS, it will take some time for the robot to determine that the sign was approached. This will result in the robot ending up exactly on the sign at the moment when it switches to execution of the command defined by the sign.

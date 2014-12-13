@@ -61,11 +61,11 @@ The MD25 has 17 registers numbered 0 to 16 as follows:
 \newpage
 For controlling the motors, registers 0, 1 and 15 are used. Firstly, initializing motor control, mode register (15) is modified.
 The mode register selects which mode of operation and $I^2C$ data input type the user requires. Here the type 3 was chosen and writing this value 
-to the mode register makes enables turn mode: "speed1" controls both motors \textit{speed}, and "speed2" becomes the \textit{turn} value. 
+to the mode register makes enables turn mode: 'speed1' controls both motors \textit{speed}, and 'speed2' becomes the \textit{turn} value. 
 These two values correspond to the \textit{linear} and \textit{angular} respectively, which are provided by state machine.
 Data is in the range of -128 for full reverse, 0 for stop and 127 for full forward speed of motors.
 
-It is worth to mention, that turn mode looks at the speed register to decide if the direction is forward or reverse. Then it applies a subtraction or addition of the turn value on either motor. If the direction is forward:
+It is worth to mention, that turn mode looks at the speed register to decide if the direction is forward or reverse. Then it applies a subtraction or addition of the turn value on both motors. If the direction is forward:
 \begin{table}[!ht]
 	\centering
 	\begin{tabular}{lcl}
@@ -111,7 +111,7 @@ Main function is to drive motors was implemented by sending  \textit{linear} and
 \paragraph{Controlling encoders}
 
 For controlling the encoders, registers 2-9 and 16, listed in a table \ref{table:md25}, are used.
-Manipulating mentioned registers, 3 main encoder controlling functions were implemented, which are presented figure \ref{fig:encoder_structure}.
+Manipulating the mentioned registers, 4 main controlling functions were implemented, which are presented in figure \ref{fig:encoder_structure}.
 \begin{figure}[!ht]
 	\centering
 	\begin{tikzpicture}[node distance = 2cm, auto]
@@ -134,7 +134,8 @@ Manipulating mentioned registers, 3 main encoder controlling functions were impl
 	\label{fig:encoder_structure}
 \end{figure}
 
-While getting values of encoders or resetting counts included only reading/sending the values from  $I^2C$ bus command register, robot \textit{heading} calculation is implemented realising two formulas stated in equations \ref{eq:rb_rad-pc}- \ref{eq:rb_heading},
+Getting values of encoders or resetting counts included only reading/sending the values from  $I^2C$ bus command register.
+Robot \textit{heading} calculation is implemented using two formulas stated in equations \ref{eq:rb_rad-pc}- \ref{eq:rb_heading},
 %$$
 %radiansPerCount = \pi* (wheelDiameter/trackWidth) / countsPerRevolution
 %$$
@@ -218,7 +219,6 @@ equation \ref{eq:rb_heading} can be simplified and robot heading in degrees can 
 & = (ce_{r} - ce_{l} ) \cdot \frac{ d_{wheel} }{ 2\cdot d_{track} } .
 \end{align*}
 
-Having the left and right encoder counts, the latter equation enable to estimate wheeled robot's heading.
-\\
-As one knows, dead reckoning is subject to cumulative errors, however in our case, such system position tracking is not implemented. And long-time accumulative errors do not affect turning robot the requested angle, since not the actual accumulative encoder values are used, but only the difference between encoder counts before requesting an action and after.
+Having the left and right encoder counts, the latter equation allows to estimate wheeled robot's heading.
+As one knows, dead reckoning is subject to cumulative errors, however in this case, such system position tracking is not implemented. And long-time accumulative errors do not affect turning robot the requested angle, since not the actual accumulative encoder values are used, but only the difference between encoder counts before requesting an action and after.
 
