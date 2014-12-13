@@ -90,22 +90,25 @@ The initial choice for color thresholding was HSV color space. Ranges of H (hue)
 	\centering
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-	\includegraphics[scale=0.33]{thresholding-raw.png}
-	\subcaption{Raw camera input}
+		\includegraphics[height = 0.75\textwidth]{thresholding-raw.png}
+		\subcaption{Raw camera input}
 	\end{subfigure}
+	~
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[scale=0.7]{thresholding-hsv.png}
+		\includegraphics[height = 0.75\textwidth]{thresholding-hsv.png}
 		\subcaption{HSV color space}
 	\end{subfigure}
+	~
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[scale=0.7]{thresholding-YCrCb.png}
+		\includegraphics[height = 0.75\textwidth]{thresholding-YCrCb.png}
 		\subcaption{YCrCb color space}
 	\end{subfigure}
 	\caption{Comparison of color spaces used for thresholding}
 	\label{fig:color-spaces}
 \end{figure}
+
 
 After some testing, YCrCb color space proved to give better results for segmentation, as shown on figure above. As a result, YCrCb colour space was used in final implementation.
 
@@ -172,9 +175,9 @@ Described method proved to be sufficiently accurate for practical purposes, whil
 \paragraph{Neural network classifier}
 
 
-Neural networks are one of the well known and widely used machine learning technique for solving classification problems. Basic operating principle can be briefly summarized in the next paragraph.
+Neural networks are one of the well known and widely used machine learning techniques for solving classification problems. Basic operating principle can be briefly summarized in the next paragraph.
 
-Network consist of input layer, output layer and arbitrary number of levels (often one), as shown on figure \ref{fig:nn-topology}. Input image is converted to vector of values and fed into the input layer, which means that number of neurons in the input layer is equal to the size of the input. Size of the output layer is equal to the number of classes, since each individual neuron in output layer responds to one specific class. Size of hidden layer is chosen in arbitrary way and it has effect on the network performance and accuracy.
+A network consist of input layer, output layer and arbitrary number of levels (often one), as shown on figure \ref{fig:nn-topology}. The input image is converted to vector of values and feed into the input layer, which means that the number of neurons in the input layer is equal to the size of the input. The size of the output layer must be equal to the number of classes, since each single neuron in the output layer corresponds to one specific class. Then, the size of the hidden layer is chosen in an arbitrary way and it has a direct effect on the network performance and accuracy.
 
 
 \begin{figure}[th!]
@@ -201,21 +204,21 @@ Network consist of input layer, output layer and arbitrary number of levels (oft
 	\label{fig:nn-general}
 \end{figure}
 
-Signals in neural network are propagated in two direction: from input layer to the output layer (forward propagation) and from output layer to the input layer (back propagation). Forward propagation is simple weighted sum of all inputs to each of the neuron.
+Signals are propagated in two directions: from input layer to the output layer (forward propagation) and from output layer to the input layer (back propagation). Forward propagation is simple weighted sum of all inputs to each of the neurons.
 
-Training of the neural network is necessary process of determining the weights of all of the connections between each pair of neurons so that network is able to classify each of the classes from training data set. This step involves computing partial derivatives of cost function for each neuron with respect to each edge weight, which is very computationally expensive step. Because of this reason final implementation of neural network was not trained on Raspbery Pi, but on more powerful PC. Result of training was a file describing complete neural network connectivity, which was loaded to vision module to perform detection and classification. 
+Training of the neural network is a necessary process of determining the weights of all of the connections between each pair of neurons so that network is able to classify each of the classes from training data set. This step involves computing partial derivatives of cost function for each neuron with respect to each edge weight, which is very computationally expensive step. Because of this reason final implementation of neural network was not trained on Raspberry Pi, but on more powerful PC. Result of training was a file describing complete neural network connectivity, which was loaded to vision module to perform detection and classification. 
 
 System on the robot was running only forward propagation step, which was not computationally expensive to run. This was working for image containing only sign to be classified and if used on the result of object detection step, which involved image thresholding and segmentation.
 
-In order to avoid non-robust color thresholding step, position of the sign should be determined by the neural network. This is done using sliding window concept, shown on figure \ref{fig:nn-sliding-window}. Using this approach system runs neural network classifier for each sub-image of certain scale and position in the image and determines is there a sign in observed position and, if there is, which one is it. This approach required a lot of checks on a single image so it introduced big latency in processing pipeline, which made it unusable on the actual system. 
+In order to avoid non-robust colour thresholding step, position of the sign should be determined by the neural network. This is done using sliding window concept, shown on figure \ref{fig:nn-sliding-window}. Using this approach system runs neural network classifier for each sub-image of certain scale and position in the image and determines is there a sign in observed position and, if there is, which one is it. This approach required a lot of checks on a single image so it introduced big latency in processing pipeline, which made it unusable on the actual system. 
 
-Although analyzed and prototyped on the system, neural network can't be used to determine the position of the sign, so segmentation still remains the bottleneck of the robustness. Final implementation didn't use neural network approach in processing pipeline because of described reasons.
+Although analysed and prototyped on the system, neural network can't be used to determine the position of the sign, so segmentation still remains the bottleneck of the robustness. Final implementation didn't use neural network approach in processing pipeline because of described reasons.
 
 \paragraph{Computing arrow orientation}
 
 After sign has been classified as arrow, additional step needs to be performed in order to extract the arrow angle relative to the orientation of the robot at the moment of observation.
 
-Initial idea was to use already computed information about the statistical moments to get the orientation of the arrow. Center of the mass and center of the cropped image segment containing the sign form a vector pointing towards tip of the arrow. We can exploit this information to determine the angle of the vector, as shown on figure \ref{fig:arrow-angle-computation}. Although not so robust, this was intuitive and the fastest method to prototype since all moments are already computed for sign classification step, which meant that this method would reduce computational overhead.
+Initial idea was to use already computed information about the statistical moments to get the orientation of the arrow. Centre of the mass and centre of the cropped image segment containing the sign form a vector pointing towards tip of the arrow. We can exploit this information to determine the angle of the vector, as shown on figure \ref{fig:arrow-angle-computation}. Although not so robust, this was intuitive and the fastest method to prototype since all moments are already computed for sign classification step, which meant that this method would reduce computational overhead.
 
 \begin{figure}[th!]
 	\centering
@@ -277,6 +280,6 @@ In order to prevent attempts of classifications of partially visible signs and d
 	\label{fig:camera-view-areas}
 \end{figure}
 
-Detection of the sign (segmentation and blob detection) is performed at every iteration and position of the object is extracted as center of the detected blob. For predefined camera position and physical size of the signs, it can be assumed that \textit{if object's center is inside the perception area it will be completely inside the camera view}. This allows a reliable determination of the exact classification moment, without any risk of classifying partially visible objects.
+Detection of the sign (segmentation and blob detection) is performed at every iteration and position of the object is extracted as centre of the detected blob. For predefined camera position and physical size of the signs, it can be assumed that \textit{if object's centre is inside the perception area it will be completely inside the camera view}. This allows a reliable determination of the exact classification moment, without any risk of classifying partially visible objects.
 
-Similar strategy is used for detecting the proximity of the sign: if its center is in the proximity area it is assumed to be close to the robot. Since the system faces slightly delayed image processing and low FPS, it will take some time for the robot to determine that the sign was approached. This will result in the robot ending up exactly on the sign at the moment when it switches to execution of the command defined by the sign.
+Similar strategy is used for detecting the proximity of the sign: if its centre is in the proximity area it is assumed to be close to the robot. Since the system faces slightly delayed image processing and low FPS, it will take some time for the robot to determine that the sign was approached. This will result in the robot ending up exactly on the sign at the moment when it switches to execution of the command defined by the sign.
