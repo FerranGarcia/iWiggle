@@ -171,15 +171,45 @@ Described method proved to be sufficiently accurate for practical purposes, whil
 
 \paragraph{Neural network classifier}
 
-Justification of usage neural networks.
 
-Very brief theoretical background.
+Neural networks are one of the well known and widely used machine learning technique for solving classification problems. Basic operating principle can be briefly summarized in the next paragraph.
 
-Description of the way how we train it on images (raw pixel values, segmentation pixels, hu-moments as inputs, etc)
+Network consist of input layer, output layer and arbitrary number of levels (often one), as shown on figure \ref{fig:nn-topology}. Input image is converted to vector of values and fed into the input layer, which means that number of neurons in the input layer is equal to the size of the input. Size of the output layer is equal to the number of classes, since each individual neuron in output layer responds to one specific class. Size of hidden layer is chosen in arbitrary way and it has effect on the network performance and accuracy.
 
-Description of tested recognition method (sliding window, random, ...)
 
-Performance comparison with previous method.
+\begin{figure}[th!]
+	\centering
+	\begin{subfigure}[b]{1\textwidth}
+		\centering
+		\includegraphics[scale=0.6]{nn-topology.png}
+		\subcaption{Neural network topology}
+		\label{fig:nn-topology}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[scale=0.5]{nn-sliding-window.png}
+		\subcaption{Sliding window concept}
+		\label{fig:nn-sliding-window}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[scale=0.5]{nn-train-data.png}
+		\subcaption{Training data sets}
+		\label{fig:nn-train-data}
+	\end{subfigure}
+	\caption{Neural network classifier}
+	\label{fig:nn-general}
+\end{figure}
+
+Signals in neural network are propagated in two direction: from input layer to the output layer (forward propagation) and from output layer to the input layer (back propagation). Forward propagation is simple weighted sum of all inputs to each of the neuron.
+
+Training of the neural network is necessary process of determining the weights of all of the connections between each pair of neurons so that network is able to classify each of the classes from training data set. This step involves computing partial derivatives of cost function for each neuron with respect to each edge weight, which is very computationally expensive step. Because of this reason final implementation of neural network was not trained on Raspbery Pi, but on more powerful PC. Result of training was a file describing complete neural network connectivity, which was loaded to vision module to perform detection and classification. 
+
+System on the robot was running only forward propagation step, which was not computationally expensive to run. This was working for image containing only sign to be classified and if used on the result of object detection step, which involved image thresholding and segmentation.
+
+In order to avoid non-robust color thresholding step, position of the sign should be determined by the neural network. This is done using sliding window concept, shown on figure \ref{fig:nn-sliding-window}. Using this approach system runs neural network classifier for each sub-image of certain scale and position in the image and determines is there a sign in observed position and, if there is, which one is it. This approach required a lot of checks on a single image so it introduced big latency in processing pipeline, which made it unusable on the actual system. 
+
+Although analyzed and prototyped on the system, neural network can't be used to determine the position of the sign, so segmentation still remains the bottleneck of the robustness. Final implementation didn't use neural network approach in processing pipeline because of described reasons.
 
 \paragraph{Computing arrow orientation}
 
