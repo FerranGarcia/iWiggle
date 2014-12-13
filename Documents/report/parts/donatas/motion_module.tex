@@ -12,7 +12,7 @@ These requirements led to splitting the whole module into two blocks:  one being
 	\begin{tikzpicture}[node distance = 2cm, auto]
 	\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
 	text width=5em, text centered, rounded corners, minimum height=4em]
-	\tikzstyle{line} = [draw, -latex']
+	\tikzstyle{line} = [draw, -latex', line width =2pt]
 	% Place nodes
 	\node [block] (navigator) {Motion navigator};
 	\node [block, below of=navigator, xshift=-1.5cm] (motors) {Motors};
@@ -88,9 +88,9 @@ Manipulating mentioned registers, 4 main motor controlling functions were implem
 	\tikzstyle{line} = [draw, -latex', line width =2pt]
 	% Place nodes
 	\node [block,  fill=blue!40] (motors) {Motors};
-	\node [block, below of=navigator, xshift=-1.5cm] (stop) {Stop Motors};
+	\node [block, below of=motors, xshift=-1.5cm] (stop) {Stop Motors};
 	\node [block, left of=stop, node distance = 3 cm] (drive) {Drive Motors};
-	\node [block, below of=navigator, xshift=1.5cm] (left) {Turn left};
+	\node [block, below of=motors, xshift=1.5cm] (left) {Turn left};
 	\node [block, right of=left,  node distance = 3 cm] (right) {Turn right};
 	% Draw edges
 	\path [line] (motors) -| (drive);
@@ -116,9 +116,9 @@ Manipulating mentioned registers, 3 main encoder controlling functions were impl
 	\tikzstyle{line} = [draw, -latex', line width =2pt]
 	% Place nodes
 	\node [block, fill=blue!40] (encoders) {Encoders};
-	\node [block, below of=navigator, xshift=-1.5cm] 	(rleft) {Read right encoder};
+	\node [block, below of=encoders, xshift=-1.5cm] 	(rleft) {Read right encoder};
 	\node [block, left of=stop, node distance = 3 cm] 	(lleft) {Read left encoder};
-	\node [block, below of=navigator, xshift=1.5cm] 	(reset) {Reset both encoders};
+	\node [block, below of=encoders, xshift=1.5cm] 	(reset) {Reset both encoders};
 	\node [block, right of=left,  node distance = 3 cm] (angle) {Get robot heading};
 	% Draw edges
 	\path [line] (encoders) -| (rleft);
