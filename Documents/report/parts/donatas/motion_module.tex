@@ -52,6 +52,7 @@ The MD25 has 17 registers numbered 0 to 16 as follows:
 		16                & Command           & Write only          & Used for reset of encoder counts and module address changes      \\ \bottomrule
 	\end{tabular}
 	\caption{The MD25 register values and description}
+	\label{table:md25}
 \end{table}
 
 \newpage
@@ -106,7 +107,7 @@ Main function is to drive motors was implemented by sending  \textit{linear} and
 
 \paragraph{Controlling encoders}
 
-For controlling the encoders, registers 2-9 and 16 are used.
+For controlling the encoders, registers 2-9 and 16, listed in a table \ref{table:md25}, are used.
 Manipulating mentioned registers, 3 main encoder controlling functions were implemented, which are presented figure \ref{fig:encoder_structure}.
 \begin{figure}[!ht]
 	\centering
@@ -130,7 +131,7 @@ Manipulating mentioned registers, 3 main encoder controlling functions were impl
 	\label{fig:encoder_structure}
 \end{figure}
 
-While getting values of encoders or resetting counts included only reading/sending the values from  I2C bus command register, robot heading calculation is implemented realising two formulas stated in equations \ref{eq:rb_rad-pc}- \ref{eq:rb_heading},
+While getting values of encoders or resetting counts included only reading/sending the values from  I2C bus command register, robot \textit{heading} calculation is implemented realising two formulas stated in equations \ref{eq:rb_rad-pc}- \ref{eq:rb_heading},
 %$$
 %radiansPerCount = \pi* (wheelDiameter/trackWidth) / countsPerRevolution
 %$$
@@ -216,5 +217,5 @@ equation \ref{eq:rb_heading} can be simplified and robot heading in degrees can 
 
 Having the left and right encoder counts, the latter equation enable to estimate wheeled robot's heading.
 \\
-As one knows, dead reckoning is subject to cumulative errors, however in our case, such system position tracking is not implemented. And long-time accumulative errors does not affect turning robot the requested angle, since not the actual accumulative encoder values are used, but only the difference between encoder counts before requesting an action and after.
+As one knows, dead reckoning is subject to cumulative errors, however in our case, such system position tracking is not implemented. And long-time accumulative errors do not affect turning robot the requested angle, since not the actual accumulative encoder values are used, but only the difference between encoder counts before requesting an action and after.
 
